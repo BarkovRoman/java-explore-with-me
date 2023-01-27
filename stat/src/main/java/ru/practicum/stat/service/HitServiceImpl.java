@@ -4,10 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.practicum.stat.dto.CreateHitDto;
 import ru.practicum.stat.dto.HitMapper;
 import ru.practicum.stat.dto.ResponseHitDto;
+import ru.practicum.stat.dto.ResponseStatDto;
+import ru.practicum.stat.exception.IllegalRequestException;
 import ru.practicum.stat.model.Hit;
 import ru.practicum.stat.repositry.HitRepositry;
 
@@ -32,7 +33,13 @@ public class HitServiceImpl implements HitService {
     }
 
     @Override
-    public ResponseStatus get(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
-        return null;
+    public ResponseStatDto get(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
+        if (start.isBefore(end) || start == end) {
+            throw new IllegalRequestException(String.format("Error Start=%tc, End=%tc", start, end));
+        }
+        if (unique) {
+            return hitRepositry.findByStatsByDistinct(start, end, uris);
+        }
+        return hitRepositry.findByStats(start, end, uris);
     }
 }

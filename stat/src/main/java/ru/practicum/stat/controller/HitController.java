@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stat.dto.CreateHitDto;
 import ru.practicum.stat.dto.ResponseHitDto;
+import ru.practicum.stat.dto.ResponseStatDto;
 import ru.practicum.stat.service.HitServiceImpl;
 
 import java.time.LocalDateTime;
@@ -22,10 +23,10 @@ public class HitController {
     }
 
     @GetMapping("/stats")
-    public ResponseStatus get(@RequestParam LocalDateTime start,
-                              @RequestParam LocalDateTime end,
-                              @RequestParam Boolean unique,
-                              List<String> uris) {
+    public ResponseStatDto get(@RequestParam  LocalDateTime start,
+                                     @RequestParam  LocalDateTime end,
+                                     @RequestParam Boolean unique,
+                                     List<String> uris) {
         log.info("Get stats: start={}, end={}, unique={}", start, end, unique);
         return hitService.get(start, end, unique, uris);
     }
