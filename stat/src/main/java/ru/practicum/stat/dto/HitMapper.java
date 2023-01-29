@@ -9,8 +9,6 @@ public interface HitMapper {
     @Mapping(target = "id", ignore = true)
     Hit toHit(CreateHitDto createHitDto);
 
+    @Mapping(target = "created", defaultValue = "yyyy-MM-dd HH:mm:ss")
     ResponseHitDto toResponseHitDto(Hit hit);
-
-    @Mapping(target = "hits", source = "hitCount")
-    ResponseStatDto toResponseStatDto(Hit hit, int hitCount);
 }

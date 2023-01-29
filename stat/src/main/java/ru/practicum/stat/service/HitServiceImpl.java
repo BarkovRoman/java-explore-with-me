@@ -13,6 +13,7 @@ import ru.practicum.stat.model.Hit;
 import ru.practicum.stat.repositry.HitRepositry;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -33,13 +34,17 @@ public class HitServiceImpl implements HitService {
     }
 
     @Override
-    public ResponseStatDto get(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
-        if (start.isBefore(end) || start == end) {
-            throw new IllegalRequestException(String.format("Error Start=%tc, End=%tc", start, end));
+    public List<ResponseStatDto> get(String start, String end, Boolean unique, List<String> uris) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime startTime = LocalDateTime.parse(start, format);
+        LocalDateTime endTime = LocalDateTime.parse(end, format);
+
+        if (startTime.isAfter(endTime) || startTime == endTime) {
+            throw new IllegalRequestException(String.format("Error Start=%tc, End=%tc", startTime, endTime));
         }
         if (unique) {
-            return hitRepositry.findByStatsByDistinct(start, end, uris);
+            return hitRepositry.findByStatsByDistinct(startTime, endTime, uris);
         }
-        return hitRepositry.findByStats(start, end, uris);
+        return hitRepositry.findByStats(startTime, endTime, uris);
     }
 }

@@ -1,27 +1,28 @@
 package ru.practicum.stat.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "hit", schema = "public")
+@Table(name = "hits", schema = "public")
 public class Hit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(nullable = false)
     private String app;
+    @Column(nullable = false)
     private String uri;
+    @Column(nullable = false)
     private String ip;
+    @Column(nullable = false)
     private LocalDateTime created = LocalDateTime.now();
 
     @Override
