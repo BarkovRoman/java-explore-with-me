@@ -8,7 +8,7 @@ import ru.practicum.stat.dto.CreateHitDto;
 import ru.practicum.stat.dto.HitMapper;
 import ru.practicum.stat.dto.ResponseHitDto;
 import ru.practicum.stat.dto.ResponseStatDto;
-import ru.practicum.stat.exception.IllegalRequestException;
+import ru.practicum.stat.exception.RequestParametersException;
 import ru.practicum.stat.model.Hit;
 import ru.practicum.stat.repositry.HitRepositry;
 
@@ -40,11 +40,11 @@ public class HitServiceImpl implements HitService {
         LocalDateTime endTime = LocalDateTime.parse(end, format);
 
         if (startTime.isAfter(endTime) || startTime == endTime) {
-            throw new IllegalRequestException(String.format("Error Start=%tc, End=%tc", startTime, endTime));
+            throw new RequestParametersException(String.format("Error Start=%tc, End=%tc", startTime, endTime));
         }
         if (unique) {
-            return hitRepositry.findByStatsByDistinct(startTime, endTime, uris);
+            return hitRepositry.statByUniqueIp(startTime, endTime, uris);
         }
-        return hitRepositry.findByStats(startTime, endTime, uris);
+        return hitRepositry.statByIp(startTime, endTime, uris);
     }
 }

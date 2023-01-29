@@ -13,4 +13,16 @@ public class ResponseHitDto {
     private String uri;
     private String ip;
     private String created;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ResponseHitDto)) return false;
+        return id != null && id.equals(((ResponseHitDto) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

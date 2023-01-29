@@ -23,7 +23,7 @@ public class HitController {
     }
 
     @GetMapping("/stats")
-    public List<ResponseStatDto> get(@RequestParam String start,
+    public List<ResponseStatDto> getStat(@RequestParam String start,
                                      @RequestParam String end,
                                      @RequestParam(defaultValue = "false") Boolean unique,
                                      @RequestParam List<String> uris) {

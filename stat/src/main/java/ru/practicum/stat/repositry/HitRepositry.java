@@ -11,21 +11,21 @@ import java.util.List;
 
 public interface HitRepositry extends JpaRepository<Hit, Long> {
 
-    @Query(value = "select h.app, h.uri, count (distinct h.ip)" +
+    @Query(value = "select new ru.practicum.stat.dto.ResponseStatDto(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
             "from Hit h " +
-            "where h.uri = :uris and h.created between :start and :end " +
+            "where ((:uris) IS NULL OR h.uri IN (:uris)) and h.created between :start and :end " +
             "group by h.app, h.uri " +
             "order by COUNT(h.ip) desc ")
-    List<ResponseStatDto> findByStatsByDistinct(@Param("start") LocalDateTime start,
-                                                @Param("end") LocalDateTime end,
-                                                @Param("uris") List<String> uris);
+    List<ResponseStatDto> statByUniqueIp(@Param("start") LocalDateTime start,
+                                         @Param("end") LocalDateTime end,
+                                         @Param("uris") List<String> uris);
 
     @Query(value = "select new ru.practicum.stat.dto.ResponseStatDto(h.app, h.uri, COUNT(h.ip)) " +
             "from Hit h " +
             "where h.uri in (:uris) and h.created between :start and :end " +
             "group by h.app, h.uri " +
             "order by COUNT(h.ip) desc ")
-    List<ResponseStatDto> findByStats(@Param("start") LocalDateTime start,
-                                      @Param("end") LocalDateTime end,
-                                      @Param("uris") List<String> uris);
+    List<ResponseStatDto> statByIp(@Param("start") LocalDateTime start,
+                                   @Param("end") LocalDateTime end,
+                                   @Param("uris") List<String> uris);
 }
