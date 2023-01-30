@@ -34,7 +34,7 @@ public class HitServiceTest {
     public void createHit() {
         CreateHitDto createHitDto = new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1");
 
-        ResponseHitDto hit = hitService.create(createHitDto);
+        ResponseHitDto hit = hitService.createHit(createHitDto);
 
         MatcherAssert.assertThat("ewm-main-service", equalTo(hit.getApp()));
         MatcherAssert.assertThat("/events/1", equalTo(hit.getUri()));
@@ -46,11 +46,11 @@ public class HitServiceTest {
     public void getStatNoDistinct() {
         List<String> uris = List.of("/events/1", "/events/2");
 
-        hitService.create(new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1"));
-        hitService.create(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
-        hitService.create(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
+        hitService.createHit(new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1"));
+        hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
+        hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
 
-        List<ResponseStatDto> hits = hitService.get("2020-05-05 00:00:00", "2035-05-05 00:00:00",false, uris);
+        List<ResponseStatDto> hits = hitService.getStats("2020-05-05 00:00:00", "2035-05-05 00:00:00",false, uris);
 
         MatcherAssert.assertThat(2, equalTo(hits.size()));
         MatcherAssert.assertThat(2L, equalTo(hits.get(0).getHits()));
@@ -61,11 +61,11 @@ public class HitServiceTest {
     public void getStatDistinct() {
         List<String> uris = List.of("/events/1", "/events/2");
 
-        hitService.create(new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1"));
-        hitService.create(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
-        hitService.create(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
+        hitService.createHit(new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1"));
+        hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
+        hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
 
-        List<ResponseStatDto> hits = hitService.get("2020-05-05 00:00:00", "2035-05-05 00:00:00",true, uris);
+        List<ResponseStatDto> hits = hitService.getStats("2020-05-05 00:00:00", "2035-05-05 00:00:00",true, uris);
 
         MatcherAssert.assertThat(2, equalTo(hits.size()));
         MatcherAssert.assertThat(1L, equalTo(hits.get(0).getHits()));
@@ -75,7 +75,7 @@ public class HitServiceTest {
     public void getStatStartEnd() {
         List<String> uris = List.of("/events/1", "/events/2");
         assertThatThrownBy(() -> {
-            List<ResponseStatDto> hits = hitService.get("2045-05-05 00:00:00", "2035-05-05 00:00:00",true, uris);
+            List<ResponseStatDto> hits = hitService.getStats("2045-05-05 00:00:00", "2035-05-05 00:00:00",true, uris);
         }).isInstanceOf(Throwable.class);
     }
 

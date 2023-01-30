@@ -7,7 +7,7 @@ import ru.practicum.stat.dto.ResponseStatDto;
 import java.util.List;
 
 public interface HitService {
-    ResponseHitDto create(CreateHitDto createHitDto);
+    ResponseHitDto createHit(CreateHitDto createHitDto);
 
-    List<ResponseStatDto> get(String start, String end, Boolean unique, List<String> uris);
+    List<ResponseStatDto> getStats(String start, String end, Boolean unique, List<String> uris);
 }

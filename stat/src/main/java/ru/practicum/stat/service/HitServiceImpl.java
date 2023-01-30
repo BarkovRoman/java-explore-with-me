@@ -27,14 +27,14 @@ public class HitServiceImpl implements HitService {
 
     @Override
     @Transactional
-    public ResponseHitDto create(CreateHitDto createHitDto) {
+    public ResponseHitDto createHit(CreateHitDto createHitDto) {
         Hit hit = hitRepositry.save(mapper.toHit(createHitDto));
         log.info("Add Hit={}", hit);
         return mapper.toResponseHitDto(hit);
     }
 
     @Override
-    public List<ResponseStatDto> get(String start, String end, Boolean unique, List<String> uris) {
+    public List<ResponseStatDto> getStats(String start, String end, Boolean unique, List<String> uris) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime startTime = LocalDateTime.parse(start, format);
         LocalDateTime endTime = LocalDateTime.parse(end, format);
