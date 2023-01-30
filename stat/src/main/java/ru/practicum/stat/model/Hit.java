@@ -5,7 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -16,14 +17,14 @@ public class Hit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(nullable = false)
-    private String app;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String uri;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 16)
     private String ip;
     @Column(nullable = false)
     private LocalDateTime created = LocalDateTime.now();
+    @Column(name = "app_id")
+    private Long appId;
 
     @Override
     public boolean equals(Object o) {

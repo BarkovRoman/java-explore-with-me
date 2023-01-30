@@ -54,7 +54,7 @@ public class HitControllerTest {
     void get() throws Exception {
         List<ResponseStatDto> hits = new ArrayList<>();
         //given
-        when(hitService.getStats(anyString(), anyString(), anyBoolean(), anyList())).thenReturn(hits);
+        when(hitService.getStats(any(), any(), anyBoolean(), anyList())).thenReturn(hits);
 
         // when + then
         mockMvc.perform(MockMvcRequestBuilders.get("/stats?start=2020-05-05 00:00:00&end=2035-05-05 00:00:00&uris={{uri}}", new ArrayList<>())

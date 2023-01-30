@@ -10,6 +10,7 @@ import ru.practicum.stat.dto.ResponseHitDto;
 import ru.practicum.stat.dto.ResponseStatDto;
 import ru.practicum.stat.exception.RequestParametersException;
 import ru.practicum.stat.model.Hit;
+import ru.practicum.stat.repositry.AppRepositry;
 import ru.practicum.stat.repositry.HitRepositry;
 
 import java.time.LocalDateTime;
@@ -23,28 +24,30 @@ import java.util.List;
 public class HitServiceImpl implements HitService {
 
     private final HitRepositry hitRepositry;
+    private final AppRepositry appRepositry;
     private final HitMapper mapper;
 
     @Override
     @Transactional
     public ResponseHitDto createHit(CreateHitDto createHitDto) {
+        Long idApp;
+        if (appRepositry.existsByNameIgnoreCase(createHitDto.getApp())) {
+            idApp = appRepositry.
+        }
         Hit hit = hitRepositry.save(mapper.toHit(createHitDto));
         log.info("Add Hit={}", hit);
         return mapper.toResponseHitDto(hit);
     }
 
     @Override
-    public List<ResponseStatDto> getStats(String start, String end, Boolean unique, List<String> uris) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime startTime = LocalDateTime.parse(start, format);
-        LocalDateTime endTime = LocalDateTime.parse(end, format);
+    public List<ResponseStatDto> getStats(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
 
-        if (startTime.isAfter(endTime) || startTime == endTime) {
-            throw new RequestParametersException(String.format("Error Start=%tc, End=%tc", startTime, endTime));
+        if (!start.isBefore(end)) {
+            throw new RequestParametersException(String.format("Error Start=%tc, End=%tc", start, end));
         }
         if (unique) {
-            return hitRepositry.statByUniqueIp(startTime, endTime, uris);
+            return hitRepositry.statByUniqueIp(start, end, uris);
         }
-        return hitRepositry.statByIp(startTime, endTime, uris);
+        return hitRepositry.statByIp(start, end, uris);
     }
 }

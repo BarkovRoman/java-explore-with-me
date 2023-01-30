@@ -44,13 +44,14 @@ public class HitServiceTest {
     @Test
     @Sql("/schemaTest.sql")
     public void getStatNoDistinct() {
+        LocalDateTime time = LocalDateTime.now();
         List<String> uris = List.of("/events/1", "/events/2");
 
         hitService.createHit(new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1"));
         hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
         hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
 
-        List<ResponseStatDto> hits = hitService.getStats("2020-05-05 00:00:00", "2035-05-05 00:00:00",false, uris);
+        List<ResponseStatDto> hits = hitService.getStats(time.minusDays(10), time.plusDays(10),false, uris);
 
         MatcherAssert.assertThat(2, equalTo(hits.size()));
         MatcherAssert.assertThat(2L, equalTo(hits.get(0).getHits()));
@@ -59,13 +60,14 @@ public class HitServiceTest {
     @Test
     @Sql("/schemaTest.sql")
     public void getStatDistinct() {
+        LocalDateTime time = LocalDateTime.now();
         List<String> uris = List.of("/events/1", "/events/2");
 
         hitService.createHit(new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1"));
         hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
         hitService.createHit(new CreateHitDto("ewm-main-service", "/events/2", "192.163.0.2"));
 
-        List<ResponseStatDto> hits = hitService.getStats("2020-05-05 00:00:00", "2035-05-05 00:00:00",true, uris);
+        List<ResponseStatDto> hits = hitService.getStats(time.minusDays(10), time.plusDays(10),true, uris);
 
         MatcherAssert.assertThat(2, equalTo(hits.size()));
         MatcherAssert.assertThat(1L, equalTo(hits.get(0).getHits()));
@@ -73,9 +75,10 @@ public class HitServiceTest {
 
     @Test
     public void getStatStartEnd() {
+        LocalDateTime time = LocalDateTime.now();
         List<String> uris = List.of("/events/1", "/events/2");
         assertThatThrownBy(() -> {
-            List<ResponseStatDto> hits = hitService.getStats("2045-05-05 00:00:00", "2035-05-05 00:00:00",true, uris);
+            List<ResponseStatDto> hits = hitService.getStats(time.minusDays(10), time.plusDays(10),true, uris);
         }).isInstanceOf(Throwable.class);
     }
 

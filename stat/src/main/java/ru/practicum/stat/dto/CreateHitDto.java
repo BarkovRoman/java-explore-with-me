@@ -11,4 +11,13 @@ public class CreateHitDto {
     private String app;
     private String uri;
     private String ip;
+
+    @Override
+    public String toString() {
+        return "CreateHitDto{" +
+                "app='" + app + '\'' +
+                ", uri='" + uri + '\'' +
+                ", ip='" + ip + '\'' +
+                '}';
+    }
 }
