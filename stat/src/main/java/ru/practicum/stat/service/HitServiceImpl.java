@@ -4,17 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.stat.dto.CreateHitDto;
-import ru.practicum.stat.dto.HitMapper;
-import ru.practicum.stat.dto.ResponseHitDto;
-import ru.practicum.stat.dto.ResponseStatDto;
+import ru.practicum.stat.dto.*;
 import ru.practicum.stat.exception.RequestParametersException;
+import ru.practicum.stat.model.App;
 import ru.practicum.stat.model.Hit;
 import ru.practicum.stat.repositry.AppRepositry;
 import ru.practicum.stat.repositry.HitRepositry;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -30,13 +27,14 @@ public class HitServiceImpl implements HitService {
     @Override
     @Transactional
     public ResponseHitDto createHit(CreateHitDto createHitDto) {
-        Long idApp;
-        if (appRepositry.existsByNameIgnoreCase(createHitDto.getApp())) {
-            idApp = appRepositry.
+        if (!appRepositry.existsByNameIgnoreCase(createHitDto.getApp())) {
+            App app = appRepositry.save(mapper.toApp(createHitDto.getApp()));
+            log.info("Add App={}", app);
         }
-        Hit hit = hitRepositry.save(mapper.toHit(createHitDto));
+        App app = appRepositry.findAppByNameIgnoreCase(createHitDto.getApp());
+        Hit hit = hitRepositry.save(mapper.toHit(createHitDto, app.getId()));
         log.info("Add Hit={}", hit);
-        return mapper.toResponseHitDto(hit);
+        return mapper.toResponseHitDto(hit, app.getName());
     }
 
     @Override
@@ -46,8 +44,8 @@ public class HitServiceImpl implements HitService {
             throw new RequestParametersException(String.format("Error Start=%tc, End=%tc", start, end));
         }
         if (unique) {
-            return hitRepositry.statByUniqueIp(start, end, uris);
+            return mapper.toResponseStatDto(hitRepositry.statByUniqueIp(start, end, uris));
         }
-        return hitRepositry.statByIp(start, end, uris);
+        return mapper.toResponseStatDto(hitRepositry.statByIp(start, end, uris));
     }
 }

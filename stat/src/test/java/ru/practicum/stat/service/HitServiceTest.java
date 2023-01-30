@@ -36,7 +36,7 @@ public class HitServiceTest {
 
         ResponseHitDto hit = hitService.createHit(createHitDto);
 
-        MatcherAssert.assertThat("ewm-main-service", equalTo(hit.getApp()));
+        MatcherAssert.assertThat("/events/1", equalTo(hit.getUri()));
         MatcherAssert.assertThat("/events/1", equalTo(hit.getUri()));
 
     }
@@ -78,17 +78,17 @@ public class HitServiceTest {
         LocalDateTime time = LocalDateTime.now();
         List<String> uris = List.of("/events/1", "/events/2");
         assertThatThrownBy(() -> {
-            List<ResponseStatDto> hits = hitService.getStats(time.minusDays(10), time.plusDays(10),true, uris);
+            List<ResponseStatDto> hits = hitService.getStats(time.plusDays(10), time.minusDays(10),true, uris);
         }).isInstanceOf(Throwable.class);
     }
 
     @Test
     public void responseHitDtoTest() {
-        LocalDateTime created = LocalDateTime.now();
-        Hit hit = new Hit(1L, "ewm-main-service", "/events/1", "192.163.0.1", created);
-        ResponseHitDto responseHitDto = new ResponseHitDto(1L, "ewm-main-service", "/events/1", "192.163.0.1", "created");
+        LocalDateTime created = LocalDateTime.of(2023, 12, 10, 12, 10);
+        Hit hit = new Hit(1L, 1L, "/events/1", "192.163.0.1", created);
+        ResponseHitDto responseHitDto = new ResponseHitDto(1L, "ewm-main-service", "/events/1", "192.163.0.1", "2023-12-10T12:10:00");
 
-        ResponseHitDto test = mapper.toResponseHitDto(hit);
+        ResponseHitDto test = mapper.toResponseHitDto(hit, "ewm-main-service");
 
         assertThat(responseHitDto, equalTo(test));
         assertThat(responseHitDto.hashCode(), equalTo(test.hashCode()));
@@ -98,12 +98,12 @@ public class HitServiceTest {
     @Sql("/schemaTest.sql")
     public void hitTest() {
         LocalDateTime created = LocalDateTime.now();
-        Hit hit = new Hit(1L, "ewm-main-service", "/events/1", "192.163.0.1", created);
+        Hit hit = new Hit(1L, 1L, "/events/1", "192.163.0.1", created);
         CreateHitDto createHitDto = new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1");
 
-        Hit test = mapper.toHit(createHitDto);
+        Hit test = mapper.toHit(createHitDto, 1L);
 
-        assertThat(hit.getApp(), equalTo(test.getApp()));
+        assertThat(hit.getAppId(), equalTo(test.getAppId()));
         assertThat(hit.hashCode(), equalTo(test.hashCode()));
     }
 }
