@@ -28,9 +28,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseUserDto getById(@PathVariable Long userId) {
-        log.info("Get User id={}", userId);
-        return userService.getById(userId);
+    public ResponseUserDto getById(@PathVariable Long id) {
+        log.info("Get User id={}", id);
+        return userService.getById(id);
     }
 
     @GetMapping
@@ -42,8 +42,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void remove(@PathVariable Long userId) {
-        log.info("Delete User id={}", userId);
-        userService.remove(userId);
+    public void remove(@PathVariable Long id) {
+        log.info("Delete User id={}", id);
+        userService.remove(id);
     }
 }
