@@ -2,6 +2,8 @@ package ru.practicum.ewm.categories.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.categories.dto.CategoryDto;
@@ -11,6 +13,9 @@ import ru.practicum.ewm.categories.dto.ResponseCategoryDto;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.categories.repository.CategoryRepository;
 import ru.practicum.ewm.exception.NotFoundException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -46,6 +51,24 @@ public class CategoryServiceImpl implements CategoryService {
         isExistsCategoryById(id);
         // Обратите внимание: с категорией не должно быть связано ни одного события.
         log.info("Delete CategoryId={}", id);
+        categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ResponseCategoryDto> getAll(Integer from, Integer size) {
+        final PageRequest page = PageRequest.of(from, size);
+        Page<Category> categories = categoryRepository.findAll(page);
+        return categories.stream()
+                .map(categoryMapper::toResponseCategoryDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseCategoryDto getById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Category id=%s not found", id)));
+        log.info("Get CategoryId={}", id);
+        return categoryMapper.toResponseCategoryDto(category);
     }
 
     private void isExistsCategoryById(Long id) {

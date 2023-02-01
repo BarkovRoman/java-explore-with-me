@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUser {
+public class NewUserDto {
     @NotBlank(message = "Name - не заполнен")
     private String name;
     @Email(message = "Не верный формат Email")

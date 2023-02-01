@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.user.dto.CreateUser;
+import ru.practicum.ewm.user.dto.NewUserDto;
 import ru.practicum.ewm.user.dto.ResponseUserDto;
 import ru.practicum.ewm.user.service.UserService;
 
@@ -22,9 +22,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseUserDto add(@Valid @RequestBody CreateUser createUser) {
-        log.info("Crete User={}", createUser);
-        return userService.add(createUser);
+    public ResponseUserDto add(@Valid @RequestBody NewUserDto newUserDto) {
+        log.info("Crete User={}", newUserDto);
+        return userService.add(newUserDto);
     }
 
     @GetMapping("/{id}")
