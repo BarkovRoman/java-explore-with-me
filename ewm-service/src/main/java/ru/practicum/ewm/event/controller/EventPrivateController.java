@@ -3,14 +3,14 @@ package ru.practicum.ewm.event.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.event.dto.NewEventDto;
-import ru.practicum.ewm.event.dto.ParticipationRequestDto;
-import ru.practicum.ewm.event.dto.ResponseEventDto;
-import ru.practicum.ewm.event.dto.UpdateEventDto;
+import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.service.EventService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -20,39 +20,61 @@ public class EventPrivateController {
     private final EventService eventService;
 
     @PostMapping("/{userId}/events")
-    public ResponseEventDto add(@Valid @RequestBody NewEventDto newEventDto,
-                                @PathVariable Long userId) {
+    public EventFullDto add(@Valid @RequestBody NewEventDto newEventDto,
+                            @PathVariable Long userId) {
         log.info("Create Event={}, userId={}", newEventDto, userId);
         return eventService.add(newEventDto, userId);
     }
 
     @PatchMapping("/{userId}/events")
-    public ResponseEventDto update(@Valid @RequestBody UpdateEventDto updateEventDto,
-                                   @PathVariable Long userId) {
+    public EventFullDto update(@Valid @RequestBody UpdateEventDto updateEventDto,
+                               @PathVariable Long userId) {
         log.info("Update Event={}, userId={}", updateEventDto, userId);
         return eventService.update(updateEventDto, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
-    public ResponseEventDto cancellationById(@PathVariable Long userId,
-                                              @PathVariable Long eventId) {
+    public EventFullDto cancellationById(@PathVariable Long userId,
+                                         @PathVariable Long eventId) {
         log.info("Cancellation eventId={}, userId={}", eventId, userId);
         return eventService.cancellationById(userId, eventId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
-    public ParticipationRequestDto participationByUserIdByEventId(@PathVariable Long userId,
-                                                                  @PathVariable Long eventId,
-                                                                  @PathVariable Long reqId) {
-        log.info("Participation eventId={}, userId={}, reqId={}", eventId, userId, reqId);
-        return eventService.participationByUserIdByEventId(userId, eventId, reqId);
+    public ParticipationRequestDto confirmByUserIdByEventId(@PathVariable Long userId,
+                                                            @PathVariable Long eventId,
+                                                            @PathVariable Long reqId) {
+        log.info("Confirm eventId={}, userId={}, reqId={}", eventId, userId, reqId);
+        return eventService.confirmByUserIdByEventId(userId, eventId, reqId);
     }
 
-
-
-    @GetMapping("/compilations")
-    public Event getEvent() {
-        return null;
+    @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
+    public ParticipationRequestDto rejectByUserIdByEventId(@PathVariable Long userId,
+                                                           @PathVariable Long eventId,
+                                                           @PathVariable Long reqId) {
+        log.info("Reject eventId={}, userId={}, reqId={}", eventId, userId, reqId);
+        return eventService.rejectByUserIdByEventId(userId, eventId, reqId);
     }
 
+    @GetMapping("{userId}/events")
+    public List<EventShortDto> getAllEventByUserId(@PathVariable Long userId,
+                                                   @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        log.info("getAllEvent userId={}, from={}, size={}", userId, from, size);
+        return eventService.getAllEventByUserId(userId, from, size);
+    }
+
+    @GetMapping("{userId}/events/{eventId}")
+    public EventShortDto getEventByUserId(@PathVariable Long userId,
+                                          @PathVariable Long eventId) {
+        log.info("getEvent eventId={}, userId={}", eventId, userId);
+        return eventService.getEventByUserId(userId, eventId);
+    }
+
+    @GetMapping("{userId}/events/{eventId}/requests")
+    public ParticipationRequestDto getEventByRequests(@PathVariable Long userId,
+                                                      @PathVariable Long eventId) {
+        log.info("getEventByRequests eventId={}, userId={}", eventId, userId);
+        return eventService.getEventByRequests(userId, eventId);
+    }
 }

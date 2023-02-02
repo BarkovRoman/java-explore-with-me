@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseEventDto {
+public class EventFullDto {
     private Long id;
     private String annotation;
     private Category category;
     private Integer confirmedRequests;
     private String createdOn;
     private String description;
-    private LocalDateTime eventDate;
+    private String eventDate;
     private User initiator;
     private Location location;
     private Boolean paid;
