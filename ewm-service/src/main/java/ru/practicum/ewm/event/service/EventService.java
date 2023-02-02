@@ -7,7 +7,7 @@ import java.util.List;
 public interface EventService {
     EventFullDto add(NewEventDto newEventDto, Long userId);
 
-    EventFullDto update(UpdateEventDto updateEventDto, Long userId);
+    EventFullDto update(NewEventDto newEventDto, Long userId);
 
     EventFullDto cancellationById(Long userId, Long eventId);
 

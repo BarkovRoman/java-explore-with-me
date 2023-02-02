@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.event.model.Location;
+import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.user.model.User;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class EventFullDto {
     private Integer participantLimit;
     private String publishedOn;
     private Boolean requestModeration;
-    private String state;
+    private State state;
     private String title;
     private Integer views;
 }

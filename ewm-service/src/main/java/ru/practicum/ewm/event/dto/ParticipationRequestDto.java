@@ -3,6 +3,7 @@ package ru.practicum.ewm.event.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.event.model.State;
 
 @Getter
 @AllArgsConstructor
@@ -12,5 +13,5 @@ public class ParticipationRequestDto {
     private String created;
     private Long event;
     private Long requester;
-    private String status;
+    private State status;
 }

@@ -2,12 +2,11 @@ package ru.practicum.ewm.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.*;
-import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.service.EventService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -20,17 +19,17 @@ public class EventPrivateController {
     private final EventService eventService;
 
     @PostMapping("/{userId}/events")
-    public EventFullDto add(@Valid @RequestBody NewEventDto newEventDto,
+    public EventFullDto add(@Validated(Create.class) @RequestBody NewEventDto newEventDto,
                             @PathVariable Long userId) {
         log.info("Create Event={}, userId={}", newEventDto, userId);
         return eventService.add(newEventDto, userId);
     }
 
     @PatchMapping("/{userId}/events")
-    public EventFullDto update(@Valid @RequestBody UpdateEventDto updateEventDto,
+    public EventFullDto update(@Validated(Update.class) NewEventDto newEventDto,
                                @PathVariable Long userId) {
-        log.info("Update Event={}, userId={}", updateEventDto, userId);
-        return eventService.update(updateEventDto, userId);
+        log.info("Update Event={}, userId={}", newEventDto, userId);
+        return eventService.update(newEventDto, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}")

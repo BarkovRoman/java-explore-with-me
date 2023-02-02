@@ -43,7 +43,8 @@ public class Event {
     private Integer participantLimit;
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private State state;
     @Column(nullable = false)
     private String title;
     private Integer views;
