@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.event.model.Event;
-import ru.practicum.ewm.user.dto.UserMapper;
+import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.user.model.User;
 
 @Mapper(componentModel = "spring")
@@ -21,5 +21,7 @@ public interface EventMapper {
 
     @Mapping(target = "requester", source = "requester")
     ParticipationRequestDto toParticipationRequestDto(Event event, Long requester);
+
+    EventShortDto toEventShortDto(EventShort eventShort);
 
 }

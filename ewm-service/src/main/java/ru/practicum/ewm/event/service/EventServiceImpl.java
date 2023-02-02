@@ -2,7 +2,6 @@ package ru.practicum.ewm.event.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +12,12 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -87,13 +88,17 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getAllEventByUserId(Long userId, Integer from, Integer size) {
         isExistsUserById(userId);
         final PageRequest page = PageRequest.of(from, size);
-        Page<Event> events = eventRepository.findEventByInitiatorId(userId, page);
-        return null;
+        List<EventShort> events = eventRepository.findEventByInitiatorId(userId, page);
+        return events.stream()
+                .map(eventMapper::toEventShortDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public EventShortDto getEventByUserId(Long userId, Long eventId) {
-        return null;
+    public EventFullDto getEventByUserId(Long userId, Long eventId) {
+        isExistsUserById(userId);
+        Event event = eventRepository.findByIdAndInitiatorId(userId, eventId);
+        return eventMapper.toEventFullDto(event);
     }
 
     @Override

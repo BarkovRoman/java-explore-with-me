@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.service.EventService;
+import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -64,7 +65,7 @@ public class EventPrivateController {
     }
 
     @GetMapping("{userId}/events/{eventId}")
-    public EventShortDto getEventByUserId(@PathVariable Long userId,
+    public EventFullDto getEventByUserId(@PathVariable Long userId,
                                           @PathVariable Long eventId) {
         log.info("getEvent eventId={}, userId={}", eventId, userId);
         return eventService.getEventByUserId(userId, eventId);

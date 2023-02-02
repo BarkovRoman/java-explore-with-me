@@ -8,6 +8,7 @@ import ru.practicum.ewm.exception.validation.CreatedValid;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 @Getter
 @AllArgsConstructor
