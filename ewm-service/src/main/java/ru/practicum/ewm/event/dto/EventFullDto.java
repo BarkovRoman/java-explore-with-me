@@ -4,11 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.categories.model.Category;
-import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.user.model.User;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor

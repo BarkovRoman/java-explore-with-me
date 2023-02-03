@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("users/")
+@RequestMapping("/users")
 public class EventPrivateController {
     private final EventService eventService;
 
@@ -72,7 +72,7 @@ public class EventPrivateController {
     }
 
     @GetMapping("{userId}/events/{eventId}/requests")
-    public ParticipationRequestDto getEventByRequests(@PathVariable Long userId,
+    public List<ParticipationRequestDto> getEventByRequests(@PathVariable Long userId,
                                                       @PathVariable Long eventId) {
         log.info("getEventByRequests eventId={}, userId={}", eventId, userId);
         return eventService.getEventByRequests(userId, eventId);

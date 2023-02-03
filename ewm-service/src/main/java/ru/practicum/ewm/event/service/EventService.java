@@ -1,8 +1,10 @@
 package ru.practicum.ewm.event.service;
 
 import ru.practicum.ewm.event.dto.*;
+import ru.practicum.ewm.event.model.Sort;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
@@ -20,5 +22,9 @@ public interface EventService {
 
     EventFullDto getEventByUserId(Long userId, Long eventId);
 
-    ParticipationRequestDto getEventByRequests(Long userId, Long eventId);
+    List<ParticipationRequestDto> getEventByRequests(Long userId, Long eventId);
+
+    List<EventShortDto> get(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size, List<Long> categories);
+
+    EventFullDto getById(Long id);
 }

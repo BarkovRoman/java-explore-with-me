@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.ewm.categories.model.Category;
+import ru.practicum.ewm.location.model.Location;
 import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.*;
@@ -27,21 +28,26 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
     private Integer confirmedRequests;
+    @Column(name = "created_on")
     private LocalDateTime createdOn;
     private String description;
-    @Column(nullable = false)
+    @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
     @ManyToOne
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
-    @Transient
-    @Convert(converter = Location.class)
+    @ManyToOne
+    @JoinColumn(name = "location_id")
     private Location location;
     @Column(nullable = false)
     private Boolean paid;
+    @Column(name = "participant_limit")
     private Integer participantLimit;
+    @Column(name = "published_on")
     private LocalDateTime publishedOn;
+    @Column(name = "request_moderation")
     private Boolean requestModeration;
     @Enumerated(EnumType.STRING)
     private State state;
