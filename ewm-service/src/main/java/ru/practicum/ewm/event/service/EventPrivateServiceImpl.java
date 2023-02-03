@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class EventServiceImpl implements EventService {
+public class EventPrivateServiceImpl implements EventPrivateService {
     private final RequestRepository requestRepository;
 
     private final EventRepository eventRepository;
@@ -149,39 +149,6 @@ public class EventServiceImpl implements EventService {
         return requests.stream()
                 .map(requestMapper::toParticipationRequestDto)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<EventShortDto> get(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                   Boolean onlyAvailable, Sort sort, Integer from, Integer size, List<Long> categories) {
-        final PageRequest page = PageRequest.of(from, size);
-        rangeStart = rangeStart == null ? LocalDateTime.now() : rangeStart;
-        rangeEnd = rangeEnd == null ? rangeStart.plusWeeks(1) : rangeEnd;
-        List<EventShort> events = new ArrayList<>();
-        switch (sort) {
-            case VIEWS: // сортировка по просмотрам
-
-                if (onlyAvailable) {
-                    events = eventRepository.findEventByAvailableSortViews(text, paid, rangeStart, rangeEnd, categories, page);
-                }
-                events = eventRepository.findEventSortViews(text, paid, rangeStart, rangeEnd, categories, page);
-                break;
-            case EVENT_DATE: // сортировка по дате
-
-                if (onlyAvailable) {
-                    events = eventRepository.findEventByAvailableSortDate(text, paid, rangeStart, rangeEnd, categories, page);
-                }
-                events = eventRepository.findEventSortDate(text, paid, rangeStart, rangeEnd, categories, page);
-                break;
-        }
-        return events.stream()
-                .map(eventMapper::toEventShortDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public EventFullDto getById(Long id) {
-        return null;
     }
 
     private User isExistsUserById(Long id) {

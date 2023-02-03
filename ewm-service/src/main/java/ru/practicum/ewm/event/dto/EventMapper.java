@@ -22,4 +22,7 @@ public interface EventMapper {
     EventShortDto toEventShortDto(EventShort eventShort);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Event updateEvent(NewEventDto newEventDto, @MappingTarget Event event);
+
+    @Mapping(target = "id", ignore = true)
+    Event updateEvent(AdminUpdateEventRequest adminUpdateEventRequest);
 }

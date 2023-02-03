@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.model.Sort;
-import ru.practicum.ewm.event.service.EventService;
+import ru.practicum.ewm.event.service.EventPublicService;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/events")
 public class EventPublicController {
-    private final EventService eventService;
+    private final EventPublicService eventPublicService;
 
     @GetMapping
     public List<EventShortDto> get(@RequestParam(required = false) String text,
@@ -34,13 +34,13 @@ public class EventPublicController {
         log.info("Get Event text={}, paid={}, rangeStart={}, rangeEnd={}, onlyAvailable={}, sort={}, from={}, size{}, /n categories={}",
                 text, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, categories);
         // Отправить запрос клиенту на добавление в статистику
-        return eventService.get(text, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, categories);
+        return eventPublicService.get(text, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, categories);
     }
 
     @GetMapping("/{id}")
     public EventFullDto getById(@PathVariable Long id) {
         log.info("Get Event eventId={}", id);
         // Отправить запрос клиенту на добавление в статистику
-        return eventService.getById(id);
+        return eventPublicService.getById(id);
     }
 }

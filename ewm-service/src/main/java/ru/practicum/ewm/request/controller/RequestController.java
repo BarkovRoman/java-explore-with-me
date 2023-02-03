@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("users/")
+@RequestMapping("/users")
 public class RequestController {
     private final RequestService requestService;
 

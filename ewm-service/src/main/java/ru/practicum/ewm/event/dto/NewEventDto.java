@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.exception.validation.CreatedValid;
+import ru.practicum.ewm.location.model.Location;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Size;
 @CreatedValid
 public class NewEventDto {
     @NotNull(groups = Update.class)
-    Long id;
+    private Long id;
     @NotBlank(groups = {Create.class})
     @Size(groups = {Create.class},min = 20, max = 2000, message = "annotation менее 20 или более 2000")
     private String annotation;
