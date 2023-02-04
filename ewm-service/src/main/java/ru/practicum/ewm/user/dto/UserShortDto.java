@@ -1,7 +1,14 @@
 package ru.practicum.ewm.user.dto;
 
-public interface UserShortDto {
-    Long getId();
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    String getName();
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserShortDto {
+    private Long id;
+
+    private String name;
 }

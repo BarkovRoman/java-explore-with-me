@@ -35,6 +35,13 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseService handleExistingValidationException(ExistingValidationException e) {
+        log.warn("Error 404 {}", e.getMessage());
+        return new ErrorResponseService(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity<String> handleValidation(final ValidationException e) {
         log.warn("Ошибка валидации 400 {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

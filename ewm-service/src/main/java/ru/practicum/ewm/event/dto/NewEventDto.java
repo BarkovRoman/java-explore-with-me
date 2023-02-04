@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.exception.validation.CreatedValid;
-import ru.practicum.ewm.location.model.Location;
+import ru.practicum.ewm.event.model.Location;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

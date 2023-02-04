@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.AdminUpdateEventRequest;
 import ru.practicum.ewm.event.dto.EventFullDto;
-import ru.practicum.ewm.event.model.Sort;
 import ru.practicum.ewm.event.service.EventAdminService;
 
 import javax.validation.constraints.Positive;

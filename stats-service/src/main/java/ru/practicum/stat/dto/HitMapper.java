@@ -14,7 +14,7 @@ public interface HitMapper {
     @Mapping(target = "appId", source = "appId")
     Hit toHit(CreateHitDto createHitDto, Long appId);
 
-    @Mapping(target = "created", defaultValue = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "created", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "app", source = "appName")
     ResponseHitDto toResponseHitDto(Hit hit, String appName);
 

@@ -3,7 +3,7 @@ package ru.practicum.ewm.event.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.location.model.Location;
+import ru.practicum.ewm.event.model.Location;
 
 @Getter
 @NoArgsConstructor

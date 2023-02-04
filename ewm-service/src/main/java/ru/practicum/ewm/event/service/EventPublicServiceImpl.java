@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventMapper;
-import ru.practicum.ewm.event.dto.EventShort;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.Sort;
@@ -34,7 +33,7 @@ public class EventPublicServiceImpl implements EventPublicService {
         final PageRequest page = PageRequest.of(from, size);
         rangeStart = rangeStart == null ? LocalDateTime.now() : rangeStart;
         rangeEnd = rangeEnd == null ? rangeStart.plusWeeks(1) : rangeEnd;
-        List<EventShort> events = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         switch (sort) {
             case VIEWS: // сортировка по просмотрам
 

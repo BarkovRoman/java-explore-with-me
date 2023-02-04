@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.ewm.categories.model.Category;
-import ru.practicum.ewm.location.model.Location;
 import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "event", schema = "public")
+@Table(name = "events", schema = "public")
 public class Event {
 
     @Id
@@ -38,8 +37,11 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
-    @ManyToOne
-    @JoinColumn(name = "location_id")
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "lat", column = @Column(name = "location_lat")),
+            @AttributeOverride( name = "lon", column = @Column(name = "location_lon"))
+    })
     private Location location;
     @Column(nullable = false)
     private Boolean paid;

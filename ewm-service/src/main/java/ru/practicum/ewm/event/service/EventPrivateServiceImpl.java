@@ -124,7 +124,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public List<EventShortDto> getAllEventByUserId(Long userId, Integer from, Integer size) {
         isExistsUserById(userId);
         final PageRequest page = PageRequest.of(from, size);
-        List<EventShort> events = eventRepository.findEventByInitiatorId(userId, page);
+        List<Event> events = eventRepository.findEventByInitiatorId(userId, page);
         log.info("Get all events={}", events);
         return events.stream()
                 .map(eventMapper::toEventShortDto)
