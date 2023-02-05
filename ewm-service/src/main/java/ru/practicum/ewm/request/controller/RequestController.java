@@ -2,11 +2,13 @@ package ru.practicum.ewm.request.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.service.RequestService;
 
 import javax.validation.constraints.Positive;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -17,8 +19,9 @@ public class RequestController {
     private final RequestService requestService;
 
     @PostMapping("/{userId}/requests")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ParticipationRequestDto create(@PathVariable Long userId,
-                                   @Positive @RequestParam (name = "eventId") Long eventId) {
+                                          @RequestParam(name = "eventId") Long eventId) {
         log.info("Create Request userId={}, eventId={}", userId, eventId);
         return requestService.create(userId, eventId);
     }

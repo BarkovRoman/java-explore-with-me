@@ -1,7 +1,6 @@
 package ru.practicum.ewm.compilations.dto;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import ru.practicum.ewm.compilations.model.Compilation;
 import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.event.model.Event;
@@ -17,4 +16,7 @@ public interface CompilationMapper {
 
     @Mapping(target = "events", source = "events")
     CompilationDto toCompilationDto(Compilation compilation);
+
+   /* @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Compilation updateCompilation(UpdateCompilationRecuest updateCompilationRecuest, @MappingTarget Compilation compilation);*/
 }

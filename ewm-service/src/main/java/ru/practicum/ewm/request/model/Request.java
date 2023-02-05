@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.ewm.event.model.Event;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.ewm.event.model.State;
 
 import javax.persistence.*;
@@ -28,7 +28,8 @@ public class Request {
     private Long requester;
     @Enumerated(EnumType.STRING)
     private State status;
-    private LocalDateTime created = LocalDateTime.now();
+    @CreationTimestamp
+    private LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {

@@ -1,17 +1,16 @@
 package ru.practicum.ewm.request.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.event.model.State;
 
-@Data
+import java.util.List;
+
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParticipationRequestDto {
-    private Long id;
-    private String created;
-    private Long event;
-    private Long requester;
+public class EventRequestStatusUpdateRequest {
+    private List<Long> requestIds;
     private State status;
 }

@@ -1,13 +1,13 @@
 package ru.practicum.ewm.compilations.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.event.dto.EventShortDto;
 
 import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompilationDto {

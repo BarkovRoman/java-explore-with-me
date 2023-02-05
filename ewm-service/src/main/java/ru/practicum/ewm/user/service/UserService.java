@@ -11,7 +11,7 @@ public interface UserService {
 
     ResponseUserDto getById(Long userId);
 
-    List<ResponseUserDto> getAll(Integer from, Integer size, List<Integer> ids);
+    List<ResponseUserDto> getAll(Integer from, Integer size, List<Long> ids);
 
     void remove(Long userId);
 }

@@ -9,7 +9,7 @@ public interface CategoryMapper {
     @Mapping(target = "id", ignore = true)
     Category toCategory(NewCategoryDto category);
 
-    Category toUpdateCategory(CategoryDto categoryDto);
+    CategoryDto toCategoryDto(Category category);
 
     ResponseCategoryDto toResponseCategoryDto(Category category);
 }

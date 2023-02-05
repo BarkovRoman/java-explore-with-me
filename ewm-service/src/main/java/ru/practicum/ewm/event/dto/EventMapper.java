@@ -1,42 +1,45 @@
 package ru.practicum.ewm.event.dto;
 
 import org.mapstruct.*;
-import ru.practicum.ewm.categories.dto.CategoryDto;
+import ru.practicum.ewm.categories.dto.CategoryMapper;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.event.model.Event;
-import ru.practicum.ewm.request.dto.ParticipationRequestDto;
-import ru.practicum.ewm.user.dto.UserShortDto;
+import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.User;
 
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {CategoryMapper.class, UserMapper.class})
 public interface EventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "paid", defaultValue = "false")
     @Mapping(target = "participantLimit", defaultValue = "0")
-    @Mapping(target = "confirmedRequests", defaultValue = "0", ignore = true)
+    @Mapping(target = "confirmedRequests", constant = "0")
     @Mapping(target = "requestModeration", defaultValue = "true")
-    @Mapping(target = "category", source = "category")
+    @Mapping(target = "state", constant = "PENDING")
+    @Mapping(target = "category", source = "categories")
     @Mapping(target = "initiator", source = "initiator")
-    Event toEvent(NewEventDto newEventDto, User initiator, Category category);
+    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    Event toEvent(NewEventDto newEventDto, User initiator, Category categories);
 
-   /* @Mapping(target = "eventDate", source = "event.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    @Mapping(target = "createdOn", source = "event.createdOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    @Mapping(target = "publishedOn", source = "event.publishedOn", dateFormat = "yyyy-MM-dd HH:mm:ss")*/
+    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "createdOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "publishedOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "category", source = "event.category")
+    @Mapping(target = "initiator", source = "event.initiator")
     EventFullDto toEventFullDto(Event event);
 
-    //@Mapping(target = "eventDate", source = "event.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "eventDate", /*source = "event.eventDate",*/ dateFormat = "yyyy-MM-dd HH:mm:ss")
     EventShortDto toEventShortDto(Event event);
 
-    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "category", source = "categories")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Event updateEvent(NewEventDto newEventDto, @MappingTarget Event event);
+    Event updateEvent(UpdateEventUserRequest updateEventUserRequest, @MappingTarget Event event, Category categories);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
-    Event updateEvent(AdminUpdateEventRequest adminUpdateEventRequest);
+    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Event updateEvent(AdminUpdateEventRequest adminUpdateEventRequest, @MappingTarget Event event);
 
     /*List<EventShortDto> mapEventsDto(List<Event> events);
     default EventShortDto mapEventsDto(Event event) {

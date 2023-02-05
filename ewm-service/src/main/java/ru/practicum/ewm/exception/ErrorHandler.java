@@ -12,6 +12,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,22 +25,24 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponseService handleNotFoundException(NotFoundException e) {
         log.warn("Error 404 {}", e.getMessage());
-        return new ErrorResponseService(e.getMessage());
+        return new ErrorResponseService(e.getError(), "NOT_FOUND");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseService handleExistingValidationException(ExistingValidationException e) {
+        log.warn("Error 404 {}", e.getMessage());
+        return new ErrorResponseService(e.getMessage(), "CONFLICT");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseService handleThrowable(final Throwable e) {
         log.warn("Error 500 {}", e.getMessage());
-        return new ErrorResponseService(e.getMessage());
+        return new ErrorResponseService(e.getLocalizedMessage(), "INTERNAL_SERVER_ERROR");
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponseService handleExistingValidationException(ExistingValidationException e) {
-        log.warn("Error 404 {}", e.getMessage());
-        return new ErrorResponseService(e.getMessage());
-    }
+
 
     @ExceptionHandler
     public ResponseEntity<String> handleValidation(final ValidationException e) {
@@ -80,7 +83,7 @@ public class ErrorHandler {
     public ErrorResponseService handleMethodArgumentTypeMismatchExceptio(final MethodArgumentTypeMismatchException e) {   // 400 BAD_REQUEST
         final String error = String.format("Unknown %s: %s", e.getName(), e.getValue());
         log.warn("Ошибка 400 Unknown {}: {}", e.getName(), e.getValue());
-        return new ErrorResponseService(error);
+        return new ErrorResponseService(error, null);
     }
 
 }

@@ -1,9 +1,6 @@
 package ru.practicum.ewm.event.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.user.model.User;
 
@@ -30,17 +27,17 @@ public class Event {
 
     private Integer confirmedRequests;
     @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    private LocalDateTime createdOn = LocalDateTime.now();
     private String description;
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
     @ManyToOne
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
-    @Embedded
+   @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "lat", column = @Column(name = "location_lat")),
-            @AttributeOverride( name = "lon", column = @Column(name = "location_lon"))
+            @AttributeOverride(name = "lat", column = @Column(name = "location_lat")),
+            @AttributeOverride(name = "lon", column = @Column(name = "location_lon"))
     })
     private Location location;
     @Column(nullable = false)

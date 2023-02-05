@@ -86,7 +86,7 @@ public class HitServiceTest {
     public void responseHitDtoTest() {
         LocalDateTime created = LocalDateTime.of(2023, 12, 10, 12, 10);
         Hit hit = new Hit(1L, 1L, "/events/1", "192.163.0.1", created);
-        ResponseHitDto responseHitDto = new ResponseHitDto(1L, "ewm-main-service", "/events/1", "192.163.0.1", "2023-12-10T12:10:00");
+        ResponseHitDto responseHitDto = new ResponseHitDto(1L, "ewm-main-service", "/events/1", "192.163.0.1", "2023-12-10 12:10:00");
 
         ResponseHitDto test = mapper.toResponseHitDto(hit, "ewm-main-service");
 

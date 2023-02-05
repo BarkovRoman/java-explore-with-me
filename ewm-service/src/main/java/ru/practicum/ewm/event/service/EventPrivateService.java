@@ -1,6 +1,7 @@
 package ru.practicum.ewm.event.service;
 
 import ru.practicum.ewm.event.dto.*;
+import ru.practicum.ewm.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
 import java.util.List;
@@ -8,13 +9,9 @@ import java.util.List;
 public interface EventPrivateService {
     EventFullDto add(NewEventDto newEventDto, Long userId);
 
-    EventFullDto update(NewEventDto newEventDto, Long userId);
+    EventFullDto update(Long userId, Long eventId, UpdateEventUserRequest updateEvent);
 
-    EventFullDto cancellationById(Long userId, Long eventId);
-
-    ParticipationRequestDto confirmByUserIdByEventId(Long userId, Long eventId, Long reqId);
-
-    ParticipationRequestDto rejectByUserIdByEventId(Long userId, Long eventId, Long reqId);
+    EventRequestStatusUpdateResult updateStatus(Long userId, Long eventId, EventRequestStatusUpdateRequest statusUpdateRequest);
 
     List<EventShortDto> getAllEventByUserId(Long userId, Integer from, Integer size);
 

@@ -6,10 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.categories.dto.CategoryDto;
-import ru.practicum.ewm.categories.dto.CategoryMapper;
-import ru.practicum.ewm.categories.dto.NewCategoryDto;
-import ru.practicum.ewm.categories.dto.ResponseCategoryDto;
+import ru.practicum.ewm.categories.dto.*;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.categories.repository.CategoryRepository;
 import ru.practicum.ewm.exception.NotFoundException;
@@ -35,11 +32,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public ResponseCategoryDto update(CategoryDto categoryDto) {
-        isExistsCategoryById(categoryDto.getId());
+    public ResponseCategoryDto update(NewCategoryDto categoryDto, Long catId) {
+        isExistsCategoryById(catId);
 
-        Category category = categoryRepository.findById(categoryDto.getId())
-                .orElseThrow(() -> new NotFoundException(String.format("Category id=%s not found", categoryDto.getId())));
+        Category category = categoryRepository.findById(catId)
+                .orElseThrow(() -> new NotFoundException(String.format("Category id=%s not found", catId)));
         category.setName(categoryDto.getName());
         log.info("Update Category={}", category);
         return categoryMapper.toResponseCategoryDto(category);

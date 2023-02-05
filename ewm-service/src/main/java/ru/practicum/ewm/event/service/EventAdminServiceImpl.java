@@ -26,42 +26,41 @@ public class EventAdminServiceImpl implements EventAdminService {
 
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+
     @Override
     @Transactional
-    public EventFullDto publish(Long eventId) {
-        Event event = getById(eventId);
-        if (event.getEventDate().isBefore(LocalDateTime.now().minusHours(1)) && !event.getState().equals(State.PENDING)) {
+    public EventFullDto patch(Long eventId, AdminUpdateEventRequest updateEvent) {
+        Event event = getEventById(eventId);
+
+        if (event.getEventDate().isBefore(LocalDateTime.now().minusHours(1))) {
+            log.error("Невозможно изменить событие");
             throw new ExistingValidationException("Невозможно опубликовать событие");
         }
-        event.setState(State.PUBLISHED);
-        event.setPublishedOn(LocalDateTime.now());
-        log.info("Publish Event={}", event);
-        return eventMapper.toEventFullDto(event);
-    }
 
-    @Override
-    @Transactional
-    public EventFullDto reject(Long eventId) {
-        Event event = getById(eventId);
-        if (event.getState().equals(State.PUBLISHED)) {
-            throw new ExistingValidationException("Невозможно отменить событие, опубликованное");
+        switch (updateEvent.getStateAction()) {
+            case PUBLISH_EVENT:
+                if (!event.getState().equals(State.PENDING)) {
+                    log.error("Невозможно опубликовать событие");
+                    throw new ExistingValidationException("Невозможно опубликовать событие");
+                }
+                event.setState(State.PUBLISHED);
+                break;
+            case REJECT_EVENT:
+                if (event.getState().equals(State.PUBLISHED)) {
+                    log.error("Невозможно отменить событие");
+                    throw new ExistingValidationException("Невозможно отменить событие");
+                }
+                event.setState(State.CANCELED);
+                break;
         }
-        event.setState(State.CANCELED);
-        log.info("Reject Event={}", event);
+
+        event = eventMapper.updateEvent(updateEvent, event);
+        log.info("Put EventId={}", event.getId());
         return eventMapper.toEventFullDto(event);
     }
 
     @Override
-    @Transactional
-    public EventFullDto put(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
-        Event event = getById(eventId);
-        event = eventMapper.updateEvent(adminUpdateEventRequest);
-        log.info("Put Event={}", event);
-        return eventMapper.toEventFullDto(event);
-    }
-
-    @Override
-    public List<EventFullDto> get(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+    public List<EventFullDto> get(List<Long> users, List<State> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         final PageRequest page = PageRequest.of(from, size);
         List<Event> events = eventRepository.findEventByInitiatorIdAndStateAndCategory_IdAndEventDateBetween(users, states, categories, rangeStart, rangeEnd, page);
         return events.stream()
@@ -69,7 +68,7 @@ public class EventAdminServiceImpl implements EventAdminService {
                 .collect(Collectors.toList());
     }
 
-    private Event getById(Long id) {
+    private Event getEventById(Long id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Event id=%s not found", id)));
 

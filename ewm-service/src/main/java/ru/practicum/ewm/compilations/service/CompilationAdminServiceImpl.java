@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.CompilationMapper;
 import ru.practicum.ewm.compilations.dto.NewCompilationDto;
+import ru.practicum.ewm.compilations.dto.UpdateCompilationRecuest;
 import ru.practicum.ewm.compilations.model.Compilation;
 import ru.practicum.ewm.compilations.repository.CompilationRepository;
 import ru.practicum.ewm.event.model.Event;
@@ -44,10 +45,16 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     @Transactional
-    public void addCompIdByPin(Long compId) {
+    public CompilationDto updateByPin(Long compId, UpdateCompilationRecuest updateCompilationRecuest) {
         Compilation compilation = isExistsCompilationById(compId);
-        compilation.setPinned(true);
-        log.info("Admin add pin compId={}", compId);
+        if (updateCompilationRecuest.getPinned() != null) compilation.setPinned(updateCompilationRecuest.getPinned());
+        if (updateCompilationRecuest.getTitle() != null) compilation.setTitle(updateCompilationRecuest.getTitle());
+        if (updateCompilationRecuest.getEvents().size() != 0) {
+            Set<Event> events = eventRepository.findByIdIn(updateCompilationRecuest.getEvents());
+            compilation.setEvents(events);
+        }
+        log.info("Update Compilation BD compId={}", compId);
+        return mapper.toCompilationDto(compilation);
     }
 
     @Override
