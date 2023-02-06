@@ -35,7 +35,7 @@ public class RequestServiceImp implements RequestService {
     public ParticipationRequestDto create(Long userId, Long eventId) {
         isExistsUserById(userId);
         Event event = isExistsEventById(eventId);
-        if (requestRepository.existsRequestByEventAndRequester(userId, eventId)) {
+        if (requestRepository.existsByRequesterAndEvent(userId, eventId)) {
             log.error("Add Request userId={}, eventId={} Request уже существует", userId, eventId);
             throw new ExistingValidationException("Request уже существует");
         }
@@ -57,6 +57,7 @@ public class RequestServiceImp implements RequestService {
 
         Request request = requestRepository.save(requestMapper.toRequest(userId, eventId));
 
+        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
 
         if (!event.getRequestModeration()) request.setStatus(State.PUBLISHED);
         log.info("Add BD RequestId={}", request.getId());

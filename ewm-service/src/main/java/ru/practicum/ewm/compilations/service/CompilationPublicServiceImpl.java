@@ -9,7 +9,6 @@ import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.CompilationMapper;
 import ru.practicum.ewm.compilations.model.Compilation;
 import ru.practicum.ewm.compilations.repository.CompilationRepository;
-import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.exception.NotFoundException;
 
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 public class CompilationPublicServiceImpl implements CompilationPublicService {
     private final CompilationRepository repository;
     private final CompilationMapper mapper;
-    private final EventMapper eventMapper;
 
     @Override
     public List<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {

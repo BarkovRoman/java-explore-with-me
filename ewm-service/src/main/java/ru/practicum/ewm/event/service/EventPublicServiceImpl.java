@@ -34,6 +34,7 @@ public class EventPublicServiceImpl implements EventPublicService {
         rangeStart = rangeStart == null ? LocalDateTime.now() : rangeStart;
         rangeEnd = rangeEnd == null ? rangeStart.plusWeeks(1) : rangeEnd;
         List<Event> events = new ArrayList<>();
+        if (sort == null) sort = Sort.ALL;
         switch (sort) {
             case VIEWS: // сортировка по просмотрам
 
@@ -48,6 +49,12 @@ public class EventPublicServiceImpl implements EventPublicService {
                     events = eventRepository.findEventByAvailableSortDate(text, paid, rangeStart, rangeEnd, categories, page);
                 }
                 events = eventRepository.findEventSortDate(text, paid, rangeStart, rangeEnd, categories, page);
+                break;
+            default:
+                if (onlyAvailable) {
+                    events = eventRepository.findEventByAvailableNoSort(text, paid, rangeStart, rangeEnd, categories, page);
+                }
+                events = eventRepository.findEventNoSort(text, paid, rangeStart, rangeEnd, categories, page);
                 break;
         }
         log.info("Get Events={}", events);

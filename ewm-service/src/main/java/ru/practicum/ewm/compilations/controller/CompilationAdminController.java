@@ -38,40 +38,4 @@ public class CompilationAdminController {
         log.info("Update Compilation compId={}", compId);
         return compilationAdminService.updateByPin(compId, updateCompilationRecuest);
     }
-
-
-
-
-
-
-
-
-    @PatchMapping("/{compId}/events/{eventId}")   // not
-    public void addEventById(@PathVariable Long compId,
-                             @PathVariable Long eventId) {
-        log.info("Admin add eventId={}, compId={}", eventId, compId);
-        compilationAdminService.addEventById(eventId, compId);
-    }
-
-
-
-
-
-    @DeleteMapping("/{compId}/events/{eventId}")          // not
-    public void removeEventById(@PathVariable Long compId,
-                             @PathVariable Long eventId) {
-        log.info("Admin delete eventId={}, compId={}", eventId, compId);
-        compilationAdminService.removeEventById(eventId, compId);
-    }
-
-    @DeleteMapping("/{compId}/pin")                         // not
-    public void removeCompIdByPin(@PathVariable Long compId) {
-        log.info("Admin delete pin compId={}", compId);
-        compilationAdminService.removeCompIdByPin(compId);
-    }
-
-
-
-
-
 }

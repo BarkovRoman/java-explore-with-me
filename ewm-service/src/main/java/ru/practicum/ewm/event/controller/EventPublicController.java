@@ -28,7 +28,7 @@ public class EventPublicController {
                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                              @RequestParam(defaultValue = "false") Boolean onlyAvailable,
-                             @RequestParam Sort sort,
+                             @RequestParam(required = false) Sort sort,
                              @PositiveOrZero @RequestParam (defaultValue = "0") Integer from,
                              @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Get Event text={}, paid={}, rangeStart={}, rangeEnd={}, onlyAvailable={}, sort={}, from={}, size{}, /n categories={}",

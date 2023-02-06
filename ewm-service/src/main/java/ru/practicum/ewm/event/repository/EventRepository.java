@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
+    boolean existsByCategory_Id(Long id);
 
     List<Event> findByInitiator_IdAndStateAndCategory_IdAndEventDateBetween(Long id, State state, Long id1, LocalDateTime eventDateStart, LocalDateTime eventDateEnd);
 
@@ -64,4 +65,21 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findEventByInitiatorIdAndStateAndCategory_IdAndEventDateBetween(List<Long> users, List<State> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest page);
 
     Set<Event> findByIdIn(Set<Long> events);
+
+    @Query("SELECT e FROM Event e " +
+            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
+            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
+            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
+            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
+            "AND e.confirmedRequests < e.participantLimit OR e.confirmedRequests = 0"
+    )
+    List<Event> findEventByAvailableNoSort(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
+
+    @Query("SELECT e FROM Event e " +
+            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
+            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
+            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
+            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' "
+    )
+    List<Event> findEventNoSort(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
 }

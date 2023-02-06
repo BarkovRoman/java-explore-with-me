@@ -17,8 +17,11 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    //@JoinColumn(name = "event_id")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "events_compilations",
+            joinColumns = @JoinColumn(name = "compilation_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> events;
     private Boolean pinned;
     private String title;

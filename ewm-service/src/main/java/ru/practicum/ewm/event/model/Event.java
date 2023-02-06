@@ -2,10 +2,12 @@ package ru.practicum.ewm.event.model;
 
 import lombok.*;
 import ru.practicum.ewm.categories.model.Category;
+import ru.practicum.ewm.compilations.model.Compilation;
 import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -53,6 +55,8 @@ public class Event {
     @Column(nullable = false)
     private String title;
     private Integer views;
+    @ManyToMany(mappedBy = "events")
+    private Set<Compilation> compilations;
 
     @Override
     public boolean equals(Object o) {

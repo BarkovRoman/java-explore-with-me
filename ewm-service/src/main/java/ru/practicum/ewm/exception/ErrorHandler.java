@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,23 +37,15 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponseService handleThrowable(final Throwable e) {
-        log.warn("Error 500 {}", e.getMessage());
-        return new ErrorResponseService(e.getLocalizedMessage(), "INTERNAL_SERVER_ERROR");
-    }
-
-
-
-    @ExceptionHandler
-    public ResponseEntity<String> handleValidation(final ValidationException e) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseService handleValidation(final ValidationException e) {
         log.warn("Ошибка валидации 400 {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ErrorResponseService(e.getMessage(), "BAD_REQUEST");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ErrorResponseService handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Map<String, String> result = exception.getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         fieldError ->
@@ -60,30 +53,44 @@ public class ErrorHandler {
                                         fieldError.getField(), fieldError.getRejectedValue()),
                         fieldError -> Objects.requireNonNullElse(fieldError.getDefaultMessage(), "")));
         log.warn("Ошибка 400 {}, {}", result, exception);
-        return result;
+        return new ErrorResponseService(result.toString(), "BAD_REQUEST");
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> exc(ConstraintViolationException e) {
-        log.warn("Ошибка валидации 400 {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseService exc(ConstraintViolationException e) {
+        log.warn("Ошибка валидации 409 {}", e.getMessage());
+        return new ErrorResponseService(e.getMessage(), "CONFLICT");
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseService handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
         String message = exception.getMessage();
         Map<String, String> result = Map.of("Ошибка Request", Objects.isNull(message) ? "Неизвестно" : message);
-        log.warn("Ошибка 400 {}, {}", result, exception);
-        return result;
+        log.warn("Ошибка 409 {}, {}", result, exception);
+        return new ErrorResponseService(message, "CONFLICT");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseService handleMethodArgumentTypeMismatchExceptio(final MethodArgumentTypeMismatchException e) {   // 400 BAD_REQUEST
+    public ErrorResponseService handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {   // 400 BAD_REQUEST
         final String error = String.format("Unknown %s: %s", e.getName(), e.getValue());
         log.warn("Ошибка 400 Unknown {}: {}", e.getName(), e.getValue());
-        return new ErrorResponseService(error, null);
+        return new ErrorResponseService(error, "BAD_REQUEST");
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseService handleThrowable(final Throwable e) {
+        log.warn("Error 409 {}", e.getMessage());
+        return new ErrorResponseService(e.getLocalizedMessage(), "CONFLICT");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseService handleMissingParams(MissingServletRequestParameterException e) {
+        log.warn("Error 400 {}", e.getMessage());
+        return new ErrorResponseService(e.getMessage(), "BAD_REQUEST");
+    }
 }

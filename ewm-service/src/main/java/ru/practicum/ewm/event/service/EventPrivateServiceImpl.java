@@ -45,6 +45,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         User initiator = isExistsUserById(userId);
         Category category = isExistsCategoryById(newEventDto.getCategory());
         Event event = eventMapper.toEvent(newEventDto, initiator, category);
+        if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new ExistingValidationException("Дата события не раньше чем через 2 часа.");
+        }
         Event newEvent = eventRepository.save(event);
         log.info("Add BD EventId={}, userId={}", newEvent.getId(), userId);
         return eventMapper.toEventFullDto(newEvent);
@@ -59,16 +62,17 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         if (!event.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
 
-            if (event.getRequestModeration() || event.getState().equals(State.CANCELED)) {
+            if (event.getState().equals(State.CANCELED) || event.getState().equals(State.PENDING)) {
 
                 if (updateEvent.getCategory() != null) {
                     category = isExistsCategoryById(updateEvent.getCategory());
                 }
+                if (updateEvent.getStateAction().equals(State.SEND_TO_REVIEW)) event.setState(State.PENDING);
                 if (updateEvent.getStateAction().equals(State.CANCEL_REVIEW)) event.setState(State.CANCELED);
 
                 event = eventMapper.updateEvent(updateEvent, event, category);
 
-                log.info("Update EventStatus -> {}, userId={}", State.CANCELED, userId);
+                log.info("Update EventStatus -> {}, userId={}", State.PENDING, userId);
                 return eventMapper.toEventFullDto(event);
             }
         }
@@ -81,16 +85,25 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public EventRequestStatusUpdateResult updateStatus(Long userId, Long eventId, EventRequestStatusUpdateRequest statusUpdateRequest) {
         List<ParticipationRequestDto> confirmed = new ArrayList<>();
         List<ParticipationRequestDto> rejected = new ArrayList<>();
+        State status = statusUpdateRequest.getStatus();
 
         isExistsUserById(userId);
         Event event = isExistsEventByIdAndInitiatorId(eventId, userId);
-        List<Request> requests = requestRepository.findRequestsByEventIn(statusUpdateRequest.getRequestIds());
+        List<Request> requests = requestRepository.findRequestsByIdIn(statusUpdateRequest.getRequestIds());
+
+        if (status == State.REJECTED) {
+            rejected = requests.stream()
+                    .peek(request -> request.setStatus(status))
+                    .map(requestMapper::toParticipationRequestDto)
+                    .collect(Collectors.toList());
+            return new EventRequestStatusUpdateResult(confirmed, rejected);
+        }
 
         // если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
         if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
             log.info("Confirm Event limit={}, moderation={}", event.getParticipantLimit(), event.getRequestModeration());
             confirmed = requests.stream()
-                    .peek(request -> request.setStatus(statusUpdateRequest.getStatus()))
+                    .peek(request -> request.setStatus(status))
                     .map(requestMapper::toParticipationRequestDto)
                     .collect(Collectors.toList());
             return new EventRequestStatusUpdateResult(confirmed, rejected);
@@ -108,9 +121,10 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                     req.setStatus(State.CONFIRMED);
                     confirmed.add(requestMapper.toParticipationRequestDto(req));
                     event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                } else {
+                    req.setStatus(State.REJECTED);
+                    rejected.add(requestMapper.toParticipationRequestDto(req));
                 }
-                req.setStatus(State.REJECTED);
-                rejected.add(requestMapper.toParticipationRequestDto(req));
             }
         }
         return new EventRequestStatusUpdateResult(confirmed, rejected);

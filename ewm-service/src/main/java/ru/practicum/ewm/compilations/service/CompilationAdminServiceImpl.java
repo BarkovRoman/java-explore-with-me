@@ -14,6 +14,7 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.NotFoundException;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -36,23 +37,16 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     @Transactional
-    public void addEventById(Long eventId, Long compId) {
-        Event event = isExistsEventById(eventId);
-        Compilation compilation = isExistsCompilationById(compId);
-        compilation.getEvents().add(event);
-        log.info("Admin add eventId={}, compId={}", eventId, compId);
-    }
-
-    @Override
-    @Transactional
     public CompilationDto updateByPin(Long compId, UpdateCompilationRecuest updateCompilationRecuest) {
         Compilation compilation = isExistsCompilationById(compId);
+
         if (updateCompilationRecuest.getPinned() != null) compilation.setPinned(updateCompilationRecuest.getPinned());
         if (updateCompilationRecuest.getTitle() != null) compilation.setTitle(updateCompilationRecuest.getTitle());
+
         if (updateCompilationRecuest.getEvents().size() != 0) {
-            Set<Event> events = eventRepository.findByIdIn(updateCompilationRecuest.getEvents());
-            compilation.setEvents(events);
+            compilation.setEvents(eventRepository.findByIdIn(updateCompilationRecuest.getEvents()));
         }
+
         log.info("Update Compilation BD compId={}", compId);
         return mapper.toCompilationDto(compilation);
     }
@@ -63,23 +57,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         isExistsCompilationById(compId);
         repository.deleteById(compId);
         log.info("Admin delete compId={}", compId);
-    }
-
-    @Override
-    @Transactional
-    public void removeEventById(Long eventId, Long compId) {
-        Event event = isExistsEventById(eventId);
-        Compilation compilation = isExistsCompilationById(compId);
-        compilation.getEvents().remove(event);
-        log.info("Admin add eventId={}, compId={}", eventId, compId);
-    }
-
-    @Override
-    @Transactional
-    public void removeCompIdByPin(Long compId) {
-        Compilation compilation = isExistsCompilationById(compId);
-        compilation.setPinned(false);
-        log.info("Admin delete pin compId={}", compId);
     }
 
     private Event isExistsEventById(Long eventId) {
