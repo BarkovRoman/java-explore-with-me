@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void remove(Long id) {
         isExistsCategoryById(id);
-        if(eventRepository.existsByCategory_Id(id)) {
+        if (eventRepository.existsByCategory_Id(id)) {
             throw new ExistingValidationException("Категория не доступна для удаления");
         }
         // Обратите внимание: с категорией не должно быть связано ни одного события.

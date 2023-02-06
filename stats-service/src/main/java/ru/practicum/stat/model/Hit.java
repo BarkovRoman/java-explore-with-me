@@ -21,7 +21,7 @@ public class Hit {
     private Long appId;
     @Column(nullable = false, length = 30)
     private String uri;
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false, length = 20)
     private String ip;
     @Column(nullable = false)
     private LocalDateTime created = LocalDateTime.now();

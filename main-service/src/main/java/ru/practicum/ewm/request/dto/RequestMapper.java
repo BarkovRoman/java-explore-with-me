@@ -4,8 +4,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.ewm.request.model.Request;
 
-import java.time.LocalDateTime;
-
 @Mapper(componentModel = "spring")
 public interface RequestMapper {
     @Mapping(target = "id", ignore = true)

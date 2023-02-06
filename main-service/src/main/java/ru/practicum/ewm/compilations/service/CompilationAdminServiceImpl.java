@@ -14,7 +14,6 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.NotFoundException;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j

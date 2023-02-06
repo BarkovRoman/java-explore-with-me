@@ -20,7 +20,7 @@ public class App {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", length = 30, unique = true)
+    @Column(name = "name", length = 50, unique = true)
     private String name;
 
     @Override

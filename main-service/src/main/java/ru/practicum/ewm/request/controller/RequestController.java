@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.service.RequestService;
 
-import javax.validation.constraints.Positive;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
