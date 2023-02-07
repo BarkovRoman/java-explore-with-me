@@ -36,5 +36,4 @@ public class RequestController {
         log.info("get Request userId={}", userId);
         return requestService.getAllByUserId(userId);
     }
-
 }

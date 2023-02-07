@@ -40,17 +40,4 @@ public interface EventMapper {
     @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Event updateEvent(AdminUpdateEventRequest adminUpdateEventRequest, @MappingTarget Event event);
-
-    /*List<EventShortDto> mapEventsDto(List<Event> events);
-    default EventShortDto mapEventsDto(Event event) {
-        return new EventShortDto(event.getId(),
-                event.getAnnotation(),
-                new CategoryDto(event.getCategory().getId(), event.getCategory().getName()),
-                event.getConfirmedRequests(),
-                event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()),
-                event.getPaid(),
-                event.getTitle(),
-                event.getViews());
-    }*/
 }

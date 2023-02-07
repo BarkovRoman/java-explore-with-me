@@ -12,8 +12,6 @@ import java.util.Set;
 public interface EventRepository extends JpaRepository<Event, Long> {
     boolean existsByCategory_Id(Long id);
 
-    List<Event> findByInitiator_IdAndStateAndCategory_IdAndEventDateBetween(Long id, State state, Long id1, LocalDateTime eventDateStart, LocalDateTime eventDateEnd);
-
     List<Event> findEventByInitiatorId(Long userId, PageRequest page);
 
     boolean existsEventByIdAndInitiatorId(Long eventId, Long userId);
