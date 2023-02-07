@@ -39,7 +39,7 @@ services:
       - DB_NAME=ewm
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - DB_HOST=stats-db
+      - DB_HOST=ewm-db
       - DB_PORT=5432
 
   ewm-db:
