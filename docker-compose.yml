@@ -8,6 +8,7 @@ services:
       - "9090:9090"
     depends_on:
       - stats-db
+      - ewm-service
     environment:
       - DB_NAME=stat
       - POSTGRES_USER=root
@@ -19,7 +20,7 @@ services:
     image: postgres:14-alpine
     container_name: stats-db
     ports:
-      - "6541:5433"
+      - "6541:5432"
     environment:
       - POSTGRES_DB=stat
       - POSTGRES_USER=root
@@ -33,13 +34,12 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
-      - stats-server
     environment:
-      - STATISTIC_SERVER_URL=http://server:9090
+      - STATISTIC_SERVER_URL=http://stats-server:9090
       - DB_NAME=ewm
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - DB_HOST=ewm-db
+      - DB_HOST=stats-db
       - DB_PORT=5432
 
   ewm-db:
