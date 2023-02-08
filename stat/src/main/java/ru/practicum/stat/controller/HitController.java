@@ -3,6 +3,7 @@ package ru.practicum.stat.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stat.dto.CreateHitDto;
 import ru.practicum.stat.dto.ResponseHitDto;
@@ -19,6 +20,7 @@ public class HitController {
     private final HitService hitService;
 
     @PostMapping("/hit")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseHitDto createHit(@RequestBody CreateHitDto createHitDto) {
         log.info("Create Hit {}", createHitDto);
         return hitService.createHit(createHitDto);

@@ -6,6 +6,7 @@ services:
     container_name: stats-server
     ports:
       - "9090:9090"
+      - "9091:9091"
     depends_on:
       - stats-db
     environment:
@@ -14,6 +15,7 @@ services:
       - POSTGRES_PASSWORD=root
       - DB_HOST=stats-db
       - DB_PORT=5432
+      - TZ=Europe/Moscow
 
   stats-db:
     image: postgres:14-alpine
@@ -24,6 +26,7 @@ services:
       - POSTGRES_DB=stat
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+      - TZ=Europe/Moscow
 
   ewm-service:
     build: ./ewm
@@ -31,6 +34,7 @@ services:
     container_name: ewm-service
     ports:
       - "8080:8080"
+      - "8081:8081"
     depends_on:
       - ewm-db
     environment:
@@ -39,6 +43,7 @@ services:
       - POSTGRES_PASSWORD=root
       - DB_HOST=stats-db
       - DB_PORT=5432
+      - TZ=Europe/Moscow
 
   ewm-db:
     image: postgres:14-alpine
@@ -49,3 +54,4 @@ services:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+      - TZ=Europe/Moscow
