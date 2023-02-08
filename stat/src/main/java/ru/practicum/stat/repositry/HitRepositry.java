@@ -15,7 +15,7 @@ public interface HitRepositry extends JpaRepository<Hit, Long> {
             "FROM Hit h " +
             "LEFT JOIN App a ON h.appId = a.id " +
             "WHERE ((:uris) IS NULL OR h.uri IN (:uris)) AND h.created BETWEEN :start AND :end " +
-            "GROUP BY h.appId, h.uri " +
+            "GROUP BY h.appId, h.uri, a.name " +
             "ORDER BY COUNT(h.ip) DESC ")
     List<ViewStats> statByUniqueIp(@Param("start") LocalDateTime start,
                                    @Param("end") LocalDateTime end,
@@ -25,7 +25,7 @@ public interface HitRepositry extends JpaRepository<Hit, Long> {
             "FROM Hit h " +
             "LEFT JOIN App a ON h.appId = a.id " +
             "WHERE h.uri IN (:uris) AND h.created BETWEEN :start AND :end " +
-            "GROUP BY h.appId, h.uri " +
+            "GROUP BY h.appId, h.uri, a.name " +
             "ORDER BY COUNT(h.ip) DESC ")
     List<ViewStats> statByIp(@Param("start") LocalDateTime start,
                                    @Param("end") LocalDateTime end,

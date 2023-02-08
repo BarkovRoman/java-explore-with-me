@@ -46,7 +46,7 @@ public class HitControllerTest {
         mockMvc.perform(post("/hit")
                         .content(objectMapper.writeValueAsString(createHitDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.ip").value(responseHitDto.getIp()));
     }
 
