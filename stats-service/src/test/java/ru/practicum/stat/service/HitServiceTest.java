@@ -30,7 +30,7 @@ public class HitServiceTest {
     private final HitService hitService;
     private final HitMapper mapper;
 
-    /*@Test
+    @Test
     public void createHit() {
         CreateHitDto createHitDto = new CreateHitDto("ewm-main-service", "/events/1", "192.163.0.1");
 
@@ -38,7 +38,7 @@ public class HitServiceTest {
 
         MatcherAssert.assertThat("/events/1", equalTo(hit.getUri()));
         MatcherAssert.assertThat("/events/1", equalTo(hit.getUri()));
-    }*/
+    }
 
     @Test
     @Sql("/schemaTest.sql")
