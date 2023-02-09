@@ -3,6 +3,7 @@ package ru.practicum.ewm.event.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.client.NewHit;
 import ru.practicum.ewm.client.StatsClient;
@@ -19,12 +20,12 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/events")
 public class EventPublicController {
     private final EventPublicService eventPublicService;
     private final StatsClient statsClient;
-    private static final String APP = "ewm-main-service";
 
     @GetMapping
     public List<EventShortDto> get(@RequestParam(required = false) String text,
@@ -39,7 +40,7 @@ public class EventPublicController {
                                    HttpServletRequest request) {
         log.info("Get Event text={}, paid={}, rangeStart={}, rangeEnd={}, onlyAvailable={}, sort={}, from={}, size{}, /n categories={}",
                 text, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, categories);
-        statsClient.postStats(new NewHit(APP, request.getRequestURI(), request.getRemoteAddr()));  // Отправить запрос клиенту на добавление в статистику
+        statsClient.postStats(request);  // Отправить запрос клиенту на добавление в статистику
         return eventPublicService.get(text, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, categories);
     }
 
@@ -48,7 +49,7 @@ public class EventPublicController {
         log.info("Get Event eventId={}", id);
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
-        statsClient.postStats(new NewHit(APP, request.getRequestURI(), request.getRemoteAddr())); // Отправить запрос клиенту на добавление в статистику
+        statsClient.postStats(request); // Отправить запрос клиенту на добавление в статистику
         return eventPublicService.getById(id);
     }
 }

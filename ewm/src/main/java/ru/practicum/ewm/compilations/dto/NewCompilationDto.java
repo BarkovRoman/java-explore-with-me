@@ -13,8 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class NewCompilationDto {
     private Set<Long> events;
-    @NotNull
-    private Boolean pinned;
+    private boolean pinned;
     @NotBlank
     private String title;
 }

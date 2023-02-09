@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<ResponseUserDto> getAll(Integer from, Integer size, List<Long> ids) {
-        if (ids != null) {
+        if (ids != null && !ids.isEmpty()) {
             if (ids.stream().anyMatch(id -> id < 0)) {
                 throw new ExistingValidationException("ids отрицательными элементами");
             }

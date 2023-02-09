@@ -7,13 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.CompilationMapper;
 import ru.practicum.ewm.compilations.dto.NewCompilationDto;
-import ru.practicum.ewm.compilations.dto.UpdateCompilationRecuest;
+import ru.practicum.ewm.compilations.dto.UpdateCompilationRequest;
 import ru.practicum.ewm.compilations.model.Compilation;
 import ru.practicum.ewm.compilations.repository.CompilationRepository;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.NotFoundException;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -28,7 +29,10 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     @Override
     @Transactional
     public CompilationDto create(NewCompilationDto newCompilationDto) {
-        Set<Event> events = eventRepository.findByIdIn(newCompilationDto.getEvents());
+        Set<Event> events = new HashSet<>();
+        if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
+            events = eventRepository.findByIdIn(newCompilationDto.getEvents());
+        }
         Compilation compilation = repository.save(mapper.toCompilation(newCompilationDto, events));
         log.info("Admin create Compilation={}", compilation);
         return mapper.toCompilationDto(compilation);
@@ -36,14 +40,14 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     @Transactional
-    public CompilationDto updateByPin(Long compId, UpdateCompilationRecuest updateCompilationRecuest) {
+    public CompilationDto updateByPin(Long compId, UpdateCompilationRequest updateCompilationRequest) {
         Compilation compilation = isExistsCompilationById(compId);
 
-        if (updateCompilationRecuest.getPinned() != null) compilation.setPinned(updateCompilationRecuest.getPinned());
-        if (updateCompilationRecuest.getTitle() != null) compilation.setTitle(updateCompilationRecuest.getTitle());
+        if (updateCompilationRequest.getPinned() != null) compilation.setPinned(updateCompilationRequest.getPinned());
+        if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) compilation.setTitle(updateCompilationRequest.getTitle());
 
-        if (updateCompilationRecuest.getEvents().size() != 0) {
-            compilation.setEvents(eventRepository.findByIdIn(updateCompilationRecuest.getEvents()));
+        if (updateCompilationRequest.getEvents() != null && updateCompilationRequest.getEvents().isEmpty()) {
+            compilation.setEvents(eventRepository.findByIdIn(updateCompilationRequest.getEvents()));
         }
 
         log.info("Update Compilation BD compId={}", compId);

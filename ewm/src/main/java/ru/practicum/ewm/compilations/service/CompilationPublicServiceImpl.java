@@ -23,7 +23,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     private final CompilationMapper mapper;
 
     @Override
-    public List<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
+    public List<CompilationDto> getAll(boolean pinned, Integer from, Integer size) {
         final PageRequest page = PageRequest.of(from, size);
         List<Compilation> compilations = repository.findCompilationByPinned(pinned, page);
         log.info("Get all pinned={}, from={}, size={}", pinned, from, size);

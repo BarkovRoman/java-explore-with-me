@@ -21,22 +21,22 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2000)
     private String annotation;
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
+    @Transient
     private Integer confirmedRequests;
     @Column(name = "created_on")
     private LocalDateTime createdOn = LocalDateTime.now();
+    @Column(length = 7000)
     private String description;
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
     @ManyToOne
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
-    @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "lat", column = @Column(name = "location_lat")),
             @AttributeOverride(name = "lon", column = @Column(name = "location_lon"))
@@ -52,8 +52,9 @@ public class Event {
     private Boolean requestModeration;
     @Enumerated(EnumType.STRING)
     private State state;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 120)
     private String title;
+    @Transient
     private Integer views;
     @ManyToMany(mappedBy = "events")
     private Set<Compilation> compilations;

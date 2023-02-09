@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.NewCompilationDto;
-import ru.practicum.ewm.compilations.dto.UpdateCompilationRecuest;
+import ru.practicum.ewm.compilations.dto.UpdateCompilationRequest;
 import ru.practicum.ewm.compilations.service.CompilationAdminService;
 
 import javax.validation.Valid;
@@ -34,8 +34,8 @@ public class CompilationAdminController {
 
     @PatchMapping("/{compId}")
     public CompilationDto updateByPin(@PathVariable Long compId,
-                            @RequestBody UpdateCompilationRecuest updateCompilationRecuest) {
+                            @RequestBody UpdateCompilationRequest updateCompilationRequest) {
         log.info("Update Compilation compId={}", compId);
-        return compilationAdminService.updateByPin(compId, updateCompilationRecuest);
+        return compilationAdminService.updateByPin(compId, updateCompilationRequest);
     }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class EventPrivateController {

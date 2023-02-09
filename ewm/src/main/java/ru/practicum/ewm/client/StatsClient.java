@@ -1,5 +1,6 @@
 package ru.practicum.ewm.client;
 
+import org.apache.http.HttpServerConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -8,6 +9,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -25,9 +27,12 @@ public class StatsClient extends BaseClient {
                 .build());
     }
 
-    private static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    @Value("${static-server-app}")
+    private static String APP;
 
-    public void postStats(NewHit newHit) {
+    public void postStats(HttpServletRequest request) {
+        NewHit newHit = new NewHit(APP, request.getRequestURI(), request.getRemoteAddr());
         post("/hit", newHit);
     }
 
@@ -36,8 +41,8 @@ public class StatsClient extends BaseClient {
 
         Map<String, Object> parameters = Map.of(
                 "start", URLEncoder.encode(LocalDateTime.now()
-                        .minusYears(100).format(DateTimeFormatter.ofPattern(FORMAT)), StandardCharsets.UTF_8),
-                "end", URLEncoder.encode(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FORMAT)), StandardCharsets.UTF_8),
+                        .minusYears(100).format(format), StandardCharsets.UTF_8),
+                "end", URLEncoder.encode(LocalDateTime.now().format(format), StandardCharsets.UTF_8),
                 "uris", (List.of("/events/" + eventId)),
                 "unique", "false"
         );

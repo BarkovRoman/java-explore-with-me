@@ -9,7 +9,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCompilationRecuest {
+public class UpdateCompilationRequest {
     private Set<Long> events;
     private Boolean pinned;
     private String title;

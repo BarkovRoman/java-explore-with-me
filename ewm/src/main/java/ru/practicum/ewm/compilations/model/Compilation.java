@@ -23,7 +23,8 @@ public class Compilation {
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> events;
-    private Boolean pinned;
+    private boolean pinned;
+    @Column(length = 50)
     private String title;
 
     @Override

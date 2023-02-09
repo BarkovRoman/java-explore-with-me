@@ -6,13 +6,17 @@ import lombok.NoArgsConstructor;
 import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.event.model.State;
 
+import javax.validation.constraints.Size;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminUpdateEventRequest {
     private Long id;
+    @Size(min = 20, max = 2000)
     private String annotation;
     private Long category;
+    @Size(min = 20, max = 7000)
     private String description;
     private String eventDate; // "yyyy-MM-dd HH:mm:ss"
     private Location location;   // координаты необходимо изменить тип
@@ -20,5 +24,6 @@ public class AdminUpdateEventRequest {
     private Integer participantLimit;
     private Boolean requestModeration;
     private State stateAction;
+    @Size(min = 3, max = 120)
     private String title;
 }
