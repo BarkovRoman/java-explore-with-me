@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.event.model.State;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -19,10 +22,13 @@ public class UpdateEventUserRequest {
     private Long category;
     @Size(min = 20, max = 7000, message = "description менее 20 или более 7000")
     private String description;
+    @Future
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Location location;   // координаты необходимо изменить тип
     private Boolean paid;
+    @PositiveOrZero
     private Integer participantLimit;
     private Boolean requestModeration;
     private State stateAction;

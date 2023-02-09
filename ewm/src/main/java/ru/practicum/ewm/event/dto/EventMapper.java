@@ -17,7 +17,6 @@ public interface EventMapper {
     @Mapping(target = "state", constant = "PENDING")
     @Mapping(target = "category", source = "categories")
     @Mapping(target = "initiator", source = "initiator")
-    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     Event toEvent(NewEventDto newEventDto, User initiator, Category categories);
 
     @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
@@ -27,17 +26,15 @@ public interface EventMapper {
     @Mapping(target = "initiator", source = "event.initiator")
     EventFullDto toEventFullDto(Event event);
 
-    @Mapping(target = "eventDate", /*source = "event.eventDate",*/ dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EventShortDto toEventShortDto(Event event);
 
-    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "category", source = "categories")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Event updateEvent(UpdateEventUserRequest updateEventUserRequest, @MappingTarget Event event, Category categories);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
-    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Event updateEvent(AdminUpdateEventRequest adminUpdateEventRequest, @MappingTarget Event event);
 }

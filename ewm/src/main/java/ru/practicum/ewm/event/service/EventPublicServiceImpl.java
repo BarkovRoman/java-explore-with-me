@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.event.dto.EventShortDto;
@@ -14,7 +15,7 @@ import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class EventPublicServiceImpl implements EventPublicService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final StatsClient client;
 
     @Override
     @Transactional
@@ -33,30 +35,21 @@ public class EventPublicServiceImpl implements EventPublicService {
         final PageRequest page = PageRequest.of(from, size);
         rangeStart = rangeStart == null ? LocalDateTime.now() : rangeStart;
         rangeEnd = rangeEnd == null ? rangeStart.plusWeeks(1) : rangeEnd;
-        List<Event> events = new ArrayList<>();
+        List<Event> events = onlyAvailable ? eventRepository.findEventByAvailable(text, paid, rangeStart, rangeEnd, categories, page) :
+                eventRepository.findEvent(text, paid, rangeStart, rangeEnd, categories, page);
+
         if (sort == null) sort = Sort.ALL;
         switch (sort) {
             case VIEWS: // сортировка по просмотрам
-
-                if (onlyAvailable) {
-                    events = eventRepository.findEventByAvailableSortViews(text, paid, rangeStart, rangeEnd, categories, page);
-                }
-                events = eventRepository.findEventSortViews(text, paid, rangeStart, rangeEnd, categories, page);
+                events.sort(Comparator.comparing(Event::getViews));
                 break;
             case EVENT_DATE: // сортировка по дате
-
-                if (onlyAvailable) {
-                    events = eventRepository.findEventByAvailableSortDate(text, paid, rangeStart, rangeEnd, categories, page);
-                }
-                events = eventRepository.findEventSortDate(text, paid, rangeStart, rangeEnd, categories, page);
+                events.sort(Comparator.comparing(Event::getEventDate));
                 break;
             default:
-                if (onlyAvailable) {
-                    events = eventRepository.findEventByAvailableNoSort(text, paid, rangeStart, rangeEnd, categories, page);
-                }
-                events = eventRepository.findEventNoSort(text, paid, rangeStart, rangeEnd, categories, page);
                 break;
         }
+
         log.info("Get Events={}", events);
         return events.stream()
                 .map(eventMapper::toEventShortDto)

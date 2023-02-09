@@ -110,17 +110,17 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         }
 
         // нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие
-        if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
-            log.error("Confirm Event Limit={}, ConfirmedRequests={}", event.getParticipantLimit(), event.getConfirmedRequests());
+        if (event.getParticipantLimit().equals(event.getRequests().size())) {
+            log.error("Confirm Event Limit={}, ConfirmedRequests={}", event.getParticipantLimit(), event.getRequests().size());
             throw new ExistingValidationException("Невозможно подтвердить заявку, достигнут лимит.");
         }
 
         for (Request req: requests) {
             if (req.getStatus().equals((State.PENDING))) {
-                if (!event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+                if (!event.getParticipantLimit().equals(event.getRequests().size())) {
                     req.setStatus(State.CONFIRMED);
                     confirmed.add(requestMapper.toParticipationRequestDto(req));
-                    event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                    event.getRequests().add(req);
                 } else {
                     req.setStatus(State.REJECTED);
                     rejected.add(requestMapper.toParticipationRequestDto(req));

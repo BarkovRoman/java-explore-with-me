@@ -3,6 +3,7 @@ package ru.practicum.ewm.event.model;
 import lombok.*;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.compilations.model.Compilation;
+import ru.practicum.ewm.request.model.Request;
 import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.*;
@@ -55,9 +56,11 @@ public class Event {
     @Column(nullable = false, length = 120)
     private String title;
     @Transient
-    private Integer views;
+    private Long views;
     @ManyToMany(mappedBy = "events")
     private Set<Compilation> compilations;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private Set<Request> requests;
 
     @Override
     public boolean equals(Object o) {

@@ -49,14 +49,12 @@ public class RequestServiceImp implements RequestService {
             throw new ExistingValidationException("Событие неопубликованное");
         }
 
-        if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+        if (event.getParticipantLimit().equals(event.getRequests().size())) {
             log.error("Add Request userId={}, eventId={} Количество заявок равно лимиту", userId, eventId);
             throw new ExistingValidationException("Количество заявок равно лимиту");
         }
 
         Request request = requestRepository.save(requestMapper.toRequest(userId, eventId));
-
-        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
 
         if (!event.getRequestModeration()) request.setStatus(State.PUBLISHED);
         log.info("Add BD RequestId={}", request.getId());

@@ -13,7 +13,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stat
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      #- TZ=Europe/Moscow
+      - TZ=Europe/Moscow
 
   stats-db:
     image: postgres:14-alpine
@@ -24,6 +24,7 @@ services:
       - POSTGRES_DB=stat
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+      - TZ=Europe/Moscow
 
   ewm-service:
     build: ./ewm
@@ -39,6 +40,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+      - TZ=Europe/Moscow
 
   ewm-db:
     image: postgres:14-alpine
@@ -49,3 +51,4 @@ services:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+      - TZ=Europe/Moscow

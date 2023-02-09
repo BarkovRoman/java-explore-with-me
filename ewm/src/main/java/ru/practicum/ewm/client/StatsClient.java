@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class StatsClient extends BaseClient {
@@ -28,8 +29,8 @@ public class StatsClient extends BaseClient {
     }
 
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    @Value("${static-server-app}")
-    private static String APP;
+   // @Value("${static-server-app}")
+   private static final String APP = "ewm-main-service";
 
     public void postStats(HttpServletRequest request) {
         NewHit newHit = new NewHit(APP, request.getRequestURI(), request.getRemoteAddr());

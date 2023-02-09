@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.ewm.exception.validation.CreatedValid;
 import ru.practicum.ewm.event.model.Location;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,11 +25,16 @@ public class NewEventDto {
     @NotBlank(groups = {Create.class})
     @Size(groups = {Create.class}, min = 20, max = 7000, message = "description менее 20 или более 7000")
     private String description;
+    @NotNull
+    @Future
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     @NotNull(groups = {Create.class})
     private Location location;   // координаты необходимо изменить тип
+    @NotNull()
     private Boolean paid;
+    @NotNull
+    @PositiveOrZero
     private Integer participantLimit;
     private Boolean requestModeration;
     @NotBlank(groups = {Create.class})
