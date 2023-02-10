@@ -60,6 +60,6 @@ public class EventPublicServiceImpl implements EventPublicService {
     public EventFullDto getById(Long id) {
         Event event = eventRepository.getByIdAndState(id, State.PUBLISHED);
         log.info("Get Event={}", event);
-        return eventMapper.toEventFullDto(event);
+        return eventMapper.toEventFullDto(event, event.getRequests() == null ? 0 : event.getRequests().size());
     }
 }
