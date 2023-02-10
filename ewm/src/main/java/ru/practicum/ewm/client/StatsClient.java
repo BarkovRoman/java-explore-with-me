@@ -1,6 +1,5 @@
 package ru.practicum.ewm.client;
 
-import org.apache.http.HttpServerConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class StatsClient extends BaseClient {

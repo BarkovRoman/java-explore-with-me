@@ -12,7 +12,6 @@ public interface EventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "paid", defaultValue = "false")
     @Mapping(target = "participantLimit", defaultValue = "0")
-    @Mapping(target = "confirmedRequests", constant = "0")
     @Mapping(target = "requestModeration", defaultValue = "true")
     @Mapping(target = "state", constant = "PENDING")
     @Mapping(target = "category", source = "categories")
@@ -24,7 +23,8 @@ public interface EventMapper {
     @Mapping(target = "publishedOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "category", source = "event.category")
     @Mapping(target = "initiator", source = "event.initiator")
-    EventFullDto toEventFullDto(Event event);
+    @Mapping(target = "confirmedRequests", constant = "0")
+    EventFullDto toEventFullDto(Event event, int requestsList);
 
     @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EventShortDto toEventShortDto(Event event);

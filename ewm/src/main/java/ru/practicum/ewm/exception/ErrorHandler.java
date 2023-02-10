@@ -30,7 +30,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponseService handleExistingValidationException(ExistingValidationException e) {
-        log.warn("Error 404 {}", e.getMessage());
+        log.warn("Error 409 {}", e.getMessage());
         return new ErrorResponseService(e.getMessage(), "CONFLICT");
     }
 
@@ -62,12 +62,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseService handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
         String message = exception.getMessage();
         Map<String, String> result = Map.of("Ошибка Request", Objects.isNull(message) ? "Неизвестно" : message);
         log.warn("Ошибка 409 {}, {}", result, exception);
-        return new ErrorResponseService(message, "CONFLICT");
+        return new ErrorResponseService(message, "BAD_REQUEST");
     }
 
     @ExceptionHandler

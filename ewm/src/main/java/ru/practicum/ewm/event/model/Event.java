@@ -27,8 +27,6 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-    @Transient
-    private Integer confirmedRequests;
     @Column(name = "created_on")
     private LocalDateTime createdOn = LocalDateTime.now();
     @Column(length = 7000)
