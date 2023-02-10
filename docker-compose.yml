@@ -9,15 +9,15 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stat
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      #- SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stat
+      #- SPRING_DATASOURCE_USERNAME=root
+      #- SPRING_DATASOURCE_PASSWORD=root
       #- TZ=Europe/Moscow
-      #- DB_NAME=stat
-      #- POSTGRES_USER=root
-      #- POSTGRES_PASSWORD=root
-      #- DB_HOST=stats-db
-      #- DB_PORT=5432
+      - DB_NAME=stat
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=stats-db
+      - DB_PORT=5432
 
   stats-db:
     image: postgres:14-alpine
@@ -39,10 +39,15 @@ services:
     depends_on:
       - ewm-db
     environment:
+      - DB_NAME=ewm
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=ewm-db
+      - DB_PORT=5432
       - STATISTIC_SERVER_URL=http://stats-server:9090
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      #- SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
+      #- SPRING_DATASOURCE_USERNAME=root
+      #- SPRING_DATASOURCE_PASSWORD=root
       #- TZ=Europe/Moscow
 
   ewm-db:
