@@ -59,6 +59,7 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     public EventFullDto getById(Long id) {
         Event event = eventRepository.getByIdAndState(id, State.PUBLISHED);
+        event.setViews(client.getViews(event.getId()));
         log.info("Get Event={}", event);
         return eventMapper.toEventFullDto(event, event.getRequests() == null ? 0 : event.getRequests().size());
     }

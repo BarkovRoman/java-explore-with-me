@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class StatsClient extends BaseClient {
@@ -40,9 +40,8 @@ public class StatsClient extends BaseClient {
         String url = "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
 
         Map<String, Object> parameters = Map.of(
-                "start", URLEncoder.encode(LocalDateTime.now()
-                        .minusYears(100).format(format), StandardCharsets.UTF_8),
-                "end", URLEncoder.encode(LocalDateTime.now().format(format), StandardCharsets.UTF_8),
+                "start", LocalDateTime.now().minusYears(10).format(format),
+                "end", LocalDateTime.now().plusYears(10).format(format),
                 "uris", (List.of("/events/" + eventId)),
                 "unique", "false"
         );
@@ -50,5 +49,18 @@ public class StatsClient extends BaseClient {
 
         List<Stats> viewStatsList = response.hasBody() ? (List<Stats>) response.getBody() : List.of();
         return viewStatsList != null && !viewStatsList.isEmpty() ? viewStatsList.get(0).getHits() : 0L;
+    }
+
+    public List<Stats> getViewsAll(Set<Long> eventsId) {
+        String url = "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
+
+        Map<String, Object> parameters = Map.of(
+                "start",  LocalDateTime.now().minusYears(10).format(format),
+                "end", LocalDateTime.now().plusYears(10).format(format),
+                "uris", (eventsId.stream().map(id -> "/events/" + id).collect(Collectors.toList())),
+                "unique", "false"
+        );
+        ResponseEntity<Object> response = get(url, parameters);
+        return response.hasBody() ? (List<Stats>) response.getBody() : List.of();
     }
 }

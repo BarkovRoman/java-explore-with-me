@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.categories.repository.CategoryRepository;
+import ru.practicum.ewm.client.Stats;
+import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.State;
@@ -24,6 +26,7 @@ import ru.practicum.ewm.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,6 +41,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
     private final RequestMapper requestMapper;
+    private final StatsClient client;
 
     @Override
     @Transactional
@@ -72,11 +76,13 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
                 event = eventMapper.updateEvent(updateEvent, event, category);
 
+                event.setViews(client.getViews(event.getId()));
+
                 log.info("Update EventStatus -> {}, userId={}", State.PENDING, userId);
+
                 return eventMapper.toEventFullDto(event, event.getRequests() == null ? 0 : event.getRequests().size());
             }
         }
-
         throw new ExistingValidationException("Невозможно отменить событие");
     }
 
@@ -135,6 +141,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         isExistsUserById(userId);
         final PageRequest page = PageRequest.of(from, size);
         List<Event> events = eventRepository.findEventByInitiatorId(userId, page);
+        addViews(events);
         log.info("Get all events={}", events);
         return events.stream()
                 .map(eventMapper::toEventShortDto)
@@ -179,5 +186,11 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new NotFoundException(String.format("The event id=%s does not belong to the user id=%s", eventId, userId));
         }
         return event;
+    }
+
+    private void addViews(List<Event> events) {
+        Map<Long, Event> eventMap = events.stream().collect(Collectors.toMap(Event::getId, event -> event));
+        List<Stats> views = client.getViewsAll(eventMap.keySet());
+        views.forEach(h -> eventMap.get(Long.parseLong(h.getUri().split("/")[1])).setViews(h.getHits()));
     }
 }
