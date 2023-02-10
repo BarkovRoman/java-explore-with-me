@@ -54,7 +54,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         }
         Event newEvent = eventRepository.save(event);
         log.info("Add BD EventId={}, userId={}", newEvent.getId(), userId);
-        return eventMapper.toEventFullDto(newEvent,  0 );
+        return eventMapper.toEventFullDto(newEvent,  0);
     }
 
     @Override

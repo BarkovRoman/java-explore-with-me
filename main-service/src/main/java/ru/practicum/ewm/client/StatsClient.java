@@ -29,10 +29,10 @@ public class StatsClient extends BaseClient {
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Value("${static-server-app}")
-    private String APP;
+    private String app;
 
     public void postStats(HttpServletRequest request) {
-        NewHit newHit = new NewHit(APP, request.getRequestURI(), request.getRemoteAddr());
+        NewHit newHit = new NewHit(app, request.getRequestURI(), request.getRemoteAddr());
         post("/hit", newHit);
     }
 

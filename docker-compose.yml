@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   stats-server:
-    build: ./stat
+    build: ./stats-service
     image: stat_image:v1.1.23
     container_name: stats-server
     ports:
@@ -32,7 +32,7 @@ services:
       #- TZ=Europe/Moscow
 
   ewm-service:
-    build: ./ewm
+    build: ./main-service
     image: ewm_image:v1.1.23
     container_name: ewm-service
     ports:

@@ -57,7 +57,7 @@ public class Event {
     private Long views;
     @ManyToMany(mappedBy = "events")
     private Set<Compilation> compilations;
-    @OneToMany(mappedBy = "event", fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Request> requests;
 
     @Override
