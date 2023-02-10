@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @ToString
@@ -13,5 +14,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class NewCategoryDto {
     @NotBlank(message = "Name - не заполнен")
+    @Size(max = 50)
     private String name;
 }

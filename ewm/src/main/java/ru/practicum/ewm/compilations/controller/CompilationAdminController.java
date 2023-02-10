@@ -34,7 +34,7 @@ public class CompilationAdminController {
 
     @PatchMapping("/{compId}")
     public CompilationDto updateByPin(@PathVariable Long compId,
-                            @RequestBody UpdateCompilationRequest updateCompilationRequest) {
+                            @RequestBody @Valid UpdateCompilationRequest updateCompilationRequest) {
         log.info("Update Compilation compId={}", compId);
         return compilationAdminService.updateByPin(compId, updateCompilationRequest);
     }

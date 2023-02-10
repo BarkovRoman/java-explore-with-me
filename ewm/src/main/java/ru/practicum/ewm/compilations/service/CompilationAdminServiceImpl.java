@@ -43,8 +43,13 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     public CompilationDto updateByPin(Long compId, UpdateCompilationRequest updateCompilationRequest) {
         Compilation compilation = isExistsCompilationById(compId);
 
-        if (updateCompilationRequest.getPinned() != null) compilation.setPinned(updateCompilationRequest.getPinned());
-        if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) compilation.setTitle(updateCompilationRequest.getTitle());
+        if (updateCompilationRequest.getPinned() != null) {
+            compilation.setPinned(updateCompilationRequest.getPinned());
+        }
+
+        if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) {
+            compilation.setTitle(updateCompilationRequest.getTitle());
+        }
 
         if (updateCompilationRequest.getEvents() != null && !updateCompilationRequest.getEvents().isEmpty()) {
             compilation.setEvents(eventRepository.findByIdIn(updateCompilationRequest.getEvents()));
@@ -60,11 +65,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         isExistsCompilationById(compId);
         repository.deleteById(compId);
         log.info("Admin delete compId={}", compId);
-    }
-
-    private Event isExistsEventById(Long eventId) {
-        return eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(String.format("Event id=%s not found", eventId)));
     }
 
     private Compilation isExistsCompilationById(Long compId) {
