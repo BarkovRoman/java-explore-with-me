@@ -23,8 +23,7 @@ public interface EventMapper {
     @Mapping(target = "publishedOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "category", source = "event.category")
     @Mapping(target = "initiator", source = "event.initiator")
-    @Mapping(target = "confirmedRequests", constant = "0")
-    EventFullDto toEventFullDto(Event event, int requestsList);
+    EventFullDto toEventFullDto(Event event);
 
     @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EventShortDto toEventShortDto(Event event);

@@ -56,7 +56,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         event = eventMapper.updateEvent(updateEvent, event);
         log.info("Put EventId={}", event.getId());
-        return eventMapper.toEventFullDto(event, event.getRequests().size());
+        return eventMapper.toEventFullDto(event);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         final PageRequest page = PageRequest.of(from, size);
         List<Event> events = eventRepository.findEventByInitiatorIdAndStateAndCategory_IdAndEventDateBetween(users, states, categories, rangeStart, rangeEnd, page);
         return events.stream()
-                .map(event -> eventMapper.toEventFullDto(event, event.getRequests().size()))
+                .map(event -> eventMapper.toEventFullDto(event))
                 .collect(Collectors.toList());
     }
 

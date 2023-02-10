@@ -62,12 +62,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)  // BAD_REQUEST
     public ErrorResponseService handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
         String message = exception.getMessage();
         Map<String, String> result = Map.of("Ошибка Request", Objects.isNull(message) ? "Неизвестно" : message);
         log.warn("Ошибка 409 {}, {}", result, exception);
-        return new ErrorResponseService(message, "BAD_REQUEST");
+        return new ErrorResponseService(message, "CONFLICT");
     }
 
     @ExceptionHandler

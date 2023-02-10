@@ -17,45 +17,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     boolean existsEventByIdAndInitiatorId(Long eventId, Long userId);
 
-    @Query("SELECT e FROM Event e " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
-            "AND e.requests.size < e.participantLimit OR e.requests.size = 0"
-           // "ORDER BY e.views DESC "
-    )
-    List<Event> findEventSortViews(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
-            "ORDER BY e.eventDate DESC "
-    )
-    List<Event> findEventSortDate(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
-            "AND e.requests.size < e.participantLimit OR e.requests.size = 0"
-         //   "ORDER BY e.views DESC "
-    )
-    List<Event> findEventByAvailableSortViews(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
-            "AND e.requests.size < e.participantLimit OR e.requests.size = 0" +
-            "ORDER BY e.eventDate DESC "
-    )
-    List<Event> findEventByAvailableSortDate(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
     Event getByIdAndState(Long id, State state);
 
     @Query("SELECT e FROM Event e " +
@@ -70,27 +31,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "or upper(e.title) like upper(concat('%', ?1, '%')) " +
             "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
             "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
-            "AND e.requests.size < e.participantLimit OR e.requests.size = 0"
-    )
-    List<Event> findEventByAvailableNoSort(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' "
-    )
-    List<Event> findEventNoSort(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
-            "AND e.requests.size < e.participantLimit OR e.requests.size = 0"
+            "AND size(e.requests) < e.participantLimit OR size(e.requests) = 0"
     )
     List<Event> findEventByAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
 
     @Query("SELECT e FROM Event e " +
             "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +

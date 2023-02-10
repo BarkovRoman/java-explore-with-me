@@ -46,7 +46,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         if (updateCompilationRequest.getPinned() != null) compilation.setPinned(updateCompilationRequest.getPinned());
         if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) compilation.setTitle(updateCompilationRequest.getTitle());
 
-        if (updateCompilationRequest.getEvents() != null && updateCompilationRequest.getEvents().isEmpty()) {
+        if (updateCompilationRequest.getEvents() != null && !updateCompilationRequest.getEvents().isEmpty()) {
             compilation.setEvents(eventRepository.findByIdIn(updateCompilationRequest.getEvents()));
         }
 

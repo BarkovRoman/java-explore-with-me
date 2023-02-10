@@ -50,7 +50,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         }
         Event newEvent = eventRepository.save(event);
         log.info("Add BD EventId={}, userId={}", newEvent.getId(), userId);
-        EventFullDto eventFullDto = eventMapper.toEventFullDto(newEvent, newEvent.getRequests().size());
+        EventFullDto eventFullDto = eventMapper.toEventFullDto(newEvent);
         return eventFullDto;
     }
 
@@ -74,7 +74,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 event = eventMapper.updateEvent(updateEvent, event, category);
 
                 log.info("Update EventStatus -> {}, userId={}", State.PENDING, userId);
-                return eventMapper.toEventFullDto(event, event.getRequests().size());
+                return eventMapper.toEventFullDto(event);
             }
         }
 
@@ -147,7 +147,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         isExistsUserById(userId);
         Event event = isExistsEventByIdAndInitiatorId(eventId, userId);
         log.info("Get Event event={} by userId={}", event, userId);
-        return eventMapper.toEventFullDto(event, event.getRequests().size());
+        return eventMapper.toEventFullDto(event);
     }
 
     @Override

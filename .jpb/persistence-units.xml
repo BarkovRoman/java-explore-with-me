@@ -7,6 +7,11 @@
           <package value="ru.practicum.stat" />
         </packages>
       </persistence-unit>
+      <persistence-unit name="Default">
+        <packages>
+          <package value="ru.practicum.ewm" />
+        </packages>
+      </persistence-unit>
     </persistence-units>
   </component>
 </project>
