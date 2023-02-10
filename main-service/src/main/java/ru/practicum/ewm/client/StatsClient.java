@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class StatsClient extends BaseClient {
     @Autowired
-    public StatsClient(@Value("${static-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value("${statics-service.url}") String serverUrl, RestTemplateBuilder builder) {
         super(builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
