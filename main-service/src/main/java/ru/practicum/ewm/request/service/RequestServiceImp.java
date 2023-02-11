@@ -49,8 +49,9 @@ public class RequestServiceImp implements RequestService {
             throw new ExistingValidationException("Событие неопубликованное");
         }
 
-        if (event.getParticipantLimit().equals(event.getRequests().size())) {
-            log.error("Add Request userId={}, eventId={} Количество заявок равно лимиту", userId, eventId);
+        if (event.getParticipantLimit() == (event.getRequests().size())) {
+            log.error("Add Request userId={}, eventId={} Количество заявок={} равно лимиту={}",
+                    userId, eventId, event.getParticipantLimit(), event.getRequests().size());
             throw new ExistingValidationException("Количество заявок равно лимиту");
         }
 

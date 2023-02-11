@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.ewm.comments.model.Comment;
+import ru.practicum.ewm.request.model.Request;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,6 +28,9 @@ public class User {
 
     @Column(name = "email", unique = true)
     private String email;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    private Set<Comment> comment;
 
     @Override
     public boolean equals(Object o) {
