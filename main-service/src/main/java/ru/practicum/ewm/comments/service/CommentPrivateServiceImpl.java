@@ -2,15 +2,14 @@ package ru.practicum.ewm.comments.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.comments.dto.CommentFullDto;
 import ru.practicum.ewm.comments.dto.CommentMapper;
-import ru.practicum.ewm.comments.dto.CommentShortDto;
 import ru.practicum.ewm.comments.dto.NewUpdateCommentDto;
 import ru.practicum.ewm.comments.model.Comment;
 import ru.practicum.ewm.comments.repository.CommentRepository;
-import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.NotFoundException;
@@ -20,6 +19,7 @@ import ru.practicum.ewm.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -75,14 +75,13 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     public List<CommentFullDto> getAll(Long userId, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean available, Integer from, Integer size) {
         rangeEnd = rangeEnd == null ? LocalDateTime.now() : rangeEnd;
         rangeStart = rangeStart == null ? rangeEnd.minusWeeks(1) : rangeStart;
+        final PageRequest page = PageRequest.of(from, size);
         List<Comment> comments;
-
-        if (available != null) {
-            comments = commentRepository.findCommitAndAvailable(userId, available, rangeStart, rangeEnd);
-        }
-
-
-        return null;
+        comments = available == null ? commentRepository.findCommitAndUserId(userId, rangeStart, rangeEnd, page) :
+                commentRepository.findCommitAndUserIdAndAvailable(userId, available, rangeStart, rangeEnd, page);
+        return comments.stream()
+                .map(commentMapper::toCommentFullDto)
+                .collect(Collectors.toList());
     }
 
     private void isExistsRequestOrEventByUserId(Long eventId, Long userId) {

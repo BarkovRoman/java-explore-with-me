@@ -2,6 +2,7 @@ package ru.practicum.ewm.event.dto;
 
 import lombok.*;
 import ru.practicum.ewm.categories.dto.CategoryDto;
+import ru.practicum.ewm.comments.dto.CommentShortDto;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.user.dto.UserShortDto;
@@ -27,4 +28,5 @@ public class EventFullDto {
     private State state;
     private String title;
     private Integer views;
+    private CommentShortDto comment;
 }
