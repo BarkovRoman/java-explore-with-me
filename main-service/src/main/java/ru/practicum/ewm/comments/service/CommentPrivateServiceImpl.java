@@ -12,6 +12,7 @@ import ru.practicum.ewm.comments.model.Comment;
 import ru.practicum.ewm.comments.repository.CommentRepository;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
+import ru.practicum.ewm.exception.ExistingValidationException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.request.repository.RequestRepository;
 import ru.practicum.ewm.user.model.User;
@@ -85,9 +86,9 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     }
 
     private void isExistsRequestOrEventByUserId(Long eventId, Long userId) {
-        if (!requestRepository.existsByEventAndRequesterAndStatus(eventId, userId, State.CONFIRMED)) {
+        if (!requestRepository.existsByEventAndRequesterAndStatus(eventId, userId, State.PUBLISHED)) {
             if (!eventRepository.existsEventByIdAndInitiatorId(eventId, userId)) {
-                throw new NotFoundException(String.format("User id=%s not participate or not initiator Event id=%s", userId, eventId));
+                throw new ExistingValidationException(String.format("User id=%s not participate or not initiator Event id=%s", userId, eventId));
             }
         }
     }

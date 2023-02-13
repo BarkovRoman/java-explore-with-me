@@ -14,6 +14,6 @@ public class NewUpdateCommentDto {
 
     private Long id;
     @NotBlank
-    @Size(min = 50, max = 5000)
+    @Size(min = 10, max = 5000)
     private String text;
 }

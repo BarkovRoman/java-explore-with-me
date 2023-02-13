@@ -7,6 +7,8 @@ import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.user.dto.UserShortDto;
 
+import java.util.Set;
+
 @Data
 @ToString
 @NoArgsConstructor
@@ -28,5 +30,5 @@ public class EventFullDto {
     private State state;
     private String title;
     private Integer views;
-    private CommentShortDto comment;
+    private Set<CommentShortDto> comments;
 }
