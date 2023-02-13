@@ -12,8 +12,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("select c from Comment c " +
             "where c.author.id = ?1 and c.available = ?2 " +
-            "and c.created between ?3 and ?4 " +
-            "order by c.created")
+            "and c.created between ?3 and ?4 ")
     List<Comment> findCommitAndUserIdAndAvailable(Long id, boolean available, LocalDateTime start, LocalDateTime end, PageRequest page);
 
     boolean existsByIdAndAuthor_IdAndAvailableFalse(Long commentId, Long userId);
@@ -22,7 +21,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("select c from Comment c " +
             "where c.author.id = ?1 " +
-            "and c.created between ?2 and ?3 " +
-            "order by c.created")
+            "and c.created between ?2 and ?3 ")
     List<Comment> findCommitAndUserId(Long userId, LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest page);
 }

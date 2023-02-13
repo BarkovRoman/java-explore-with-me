@@ -3,6 +3,7 @@ package ru.practicum.ewm.comments.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.comments.dto.CommentFullDto;
@@ -21,6 +22,9 @@ import ru.practicum.ewm.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
 @Service
@@ -76,7 +80,8 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     public List<CommentFullDto> getAll(Long userId, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean available, Integer from, Integer size) {
         rangeEnd = rangeEnd == null ? LocalDateTime.now() : rangeEnd;
         rangeStart = rangeStart == null ? rangeEnd.minusWeeks(1) : rangeStart;
-        final PageRequest page = PageRequest.of(from, size);
+        Sort sort = Sort.by(DESC, "created");
+        final PageRequest page = PageRequest.of(from, size, sort);
         List<Comment> comments;
         comments = available == null ? commentRepository.findCommitAndUserId(userId, rangeStart, rangeEnd, page) :
                 commentRepository.findCommitAndUserIdAndAvailable(userId, available, rangeStart, rangeEnd, page);
