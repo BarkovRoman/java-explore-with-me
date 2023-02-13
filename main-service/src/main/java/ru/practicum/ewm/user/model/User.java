@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.ewm.comments.model.Comment;
-import ru.practicum.ewm.request.model.Request;
 
 import javax.persistence.*;
 import java.util.Set;

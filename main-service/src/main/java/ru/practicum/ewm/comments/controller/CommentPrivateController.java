@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.comments.dto.CommentFullDto;
-import ru.practicum.ewm.comments.dto.CommentShortDto;
 import ru.practicum.ewm.comments.dto.NewUpdateCommentDto;
 import ru.practicum.ewm.comments.service.CommentPrivateService;
 
