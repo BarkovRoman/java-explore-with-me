@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "41d23546-2a2b-447a-95e8-02fddfc8efbc",
-		"name": "Comment",
+		"_postman_id": "0a86a62a-d6dc-4138-8039-bf6868104b24",
+		"name": "Comment Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "23143209"
 	},
@@ -346,7 +346,7 @@
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData.id, '\"id\" field').to.eql(1);\r",
 							"    pm.expect(jsonData.text, '\"text\" field').to.eql(\"Принимал участие, очень понравилось\");\r",
-							"    pm.expect(jsonData.available, '\"available\" field').to.eql(false);\r",
+							"    pm.expect(jsonData.status, '\"status\" field').to.eql(\"PENDING\");\r",
 							"    pm.expect(jsonData.created, '\"created\" field').not.null;\r",
 							"    pm.expect(jsonData.event, '\"event\" field').to.eql(1);\r",
 							"});"
@@ -563,7 +563,7 @@
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData.id, '\"id\" field').to.eql(2);\r",
 							"    pm.expect(jsonData.text, '\"text\" field').to.eql(\"Рад что вам понравилось\");\r",
-							"    pm.expect(jsonData.available, '\"available\" field').to.eql(false);\r",
+							"    pm.expect(jsonData.status, '\"status\" field').to.eql(\"PENDING\");\r",
 							"    pm.expect(jsonData.created, '\"created\" field').not.null;\r",
 							"    pm.expect(jsonData.event, '\"event\" field').to.eql(1);\r",
 							"});"
@@ -679,7 +679,7 @@
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData.id, '\"id\" field').to.eql(2);\r",
 							"    pm.expect(jsonData.text, '\"text\" field').to.eql(\"Спасибо за отзыв\");\r",
-							"    pm.expect(jsonData.available, '\"available\" field').to.eql(false);\r",
+							"    pm.expect(jsonData.status, '\"status\" field').to.eql(\"PENDING\");\r",
 							"    pm.expect(jsonData.created, '\"created\" field').not.null;\r",
 							"    pm.expect(jsonData.event, '\"event\" field').to.eql(1);\r",
 							"});"
@@ -831,7 +831,7 @@
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData.id, '\"id\" field').to.eql(1);\r",
 							"    pm.expect(jsonData.text, '\"text\" field').to.eql(\"Принимал участие, очень понравилось\");\r",
-							"    pm.expect(jsonData.available, '\"available\" field').to.eql(true);\r",
+							"    pm.expect(jsonData.status, '\"status\" field').to.eql(\"APPROVED\");\r",
 							"    pm.expect(jsonData.created, '\"created\" field').not.null;\r",
 							"    pm.expect(jsonData.event, '\"event\" field').to.eql(1);\r",
 							"});"
@@ -886,7 +886,7 @@
 							"\r",
 							"    pm.expect(jsonData[0].id, 'result[0]: \"id\" field').to.eql(1);\r",
 							"    pm.expect(jsonData[0].text, 'result[0]: \"text\" field').to.eql(\"Принимал участие, очень понравилось\");\r",
-							"    pm.expect(jsonData[0].available, 'result[0]: \"available\" field').to.eql(true);\r",
+							"    pm.expect(jsonData[0].status, 'result[0]: \"status\" field').to.eql(\"APPROVED\");\r",
 							"    pm.expect(jsonData[0].created, 'result[0]: \"created\" field').not.null;\r",
 							"    pm.expect(jsonData[0].event, 'result[0]: \"event\" field').to.eql(1);\r",
 							"});"

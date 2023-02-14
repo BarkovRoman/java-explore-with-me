@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.comments.dto.CommentFullDto;
 import ru.practicum.ewm.comments.dto.NewUpdateCommentDto;
+import ru.practicum.ewm.comments.model.CommentStatus;
 import ru.practicum.ewm.comments.service.CommentPrivateService;
 
 import javax.validation.Valid;
@@ -61,11 +62,11 @@ public class CommentPrivateController {
     public List<CommentFullDto> getAll(@PathVariable Long userId,
                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                       @RequestParam(required = false) Boolean available,
+                                       @RequestParam (defaultValue = "ALL") CommentStatus status,
                                        @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                        @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Get Comment userId={}, rangeStart={}, rangeEnd={}, available={}, from={}, size={}",
-                userId, rangeStart, rangeEnd, available, from, size);
-        return commentService.getAll(userId, rangeStart, rangeEnd, available, from, size);
+                userId, rangeStart, rangeEnd, status, from, size);
+        return commentService.getAll(userId, rangeStart, rangeEnd, status, from, size);
     }
 }

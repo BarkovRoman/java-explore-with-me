@@ -3,6 +3,7 @@ package ru.practicum.ewm.comments.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.comments.model.CommentStatus;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 public class CommentFullDto {
     private Long id;
     private String text;
-    private boolean available;
+    private CommentStatus status;
     private LocalDateTime created;
     private Long event;
 }

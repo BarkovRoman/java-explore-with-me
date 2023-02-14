@@ -20,7 +20,8 @@ public class Comment {
     private Long id;
     @Column(length = 5000, nullable = false)
     private String text;
-    private boolean available;
+    @Enumerated(EnumType.STRING)
+    private CommentStatus status;
     @CreationTimestamp
     private LocalDateTime created;
     @ManyToOne
@@ -34,7 +35,7 @@ public class Comment {
         return "Comment{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", available=" + available +
+                ", status=" + status +
                 ", created=" + created +
                 ", event=" + event +
                 '}';

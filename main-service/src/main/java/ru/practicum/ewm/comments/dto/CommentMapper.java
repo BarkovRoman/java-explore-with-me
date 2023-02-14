@@ -10,7 +10,7 @@ public interface CommentMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", source = "author")
     @Mapping(target = "event", source = "eventId")
-    @Mapping(target = "available", constant = "false")
+    @Mapping(target = "status", constant = "PENDING")
     Comment toComment(NewUpdateCommentDto newUpdateCommentDto, User author, Long eventId);
 
     @Mapping(target = "created", dateFormat = "yyyy-MM-dd HH:mm:ss")

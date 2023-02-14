@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.comments.dto.CommentMapper;
 import ru.practicum.ewm.comments.dto.CommentShortDto;
 import ru.practicum.ewm.comments.model.Comment;
+import ru.practicum.ewm.comments.model.CommentStatus;
 import ru.practicum.ewm.comments.repository.CommentRepository;
 import ru.practicum.ewm.exception.NotFoundException;
 
@@ -26,7 +27,8 @@ public class CommentAdminServiceImpl implements CommentAdminService {
     public CommentShortDto updateAvailable(boolean available, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(String.format("Comment id=%s not found", commentId)));
-        comment.setAvailable(available);
+        CommentStatus status = available ? CommentStatus.APPROVED : CommentStatus.REJECTED;
+        comment.setStatus(status);
         return commentMapper.toCommentShortDto(comment);
     }
 }

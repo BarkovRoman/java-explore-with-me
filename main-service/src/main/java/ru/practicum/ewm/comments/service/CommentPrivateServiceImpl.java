@@ -10,6 +10,7 @@ import ru.practicum.ewm.comments.dto.CommentFullDto;
 import ru.practicum.ewm.comments.dto.CommentMapper;
 import ru.practicum.ewm.comments.dto.NewUpdateCommentDto;
 import ru.practicum.ewm.comments.model.Comment;
+import ru.practicum.ewm.comments.model.CommentStatus;
 import ru.practicum.ewm.comments.repository.CommentRepository;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
@@ -76,14 +77,15 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     }
 
     @Override
-    public List<CommentFullDto> getAll(Long userId, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean available, Integer from, Integer size) {
+    public List<CommentFullDto> getAll(Long userId, LocalDateTime rangeStart, LocalDateTime rangeEnd, CommentStatus status, Integer from, Integer size) {
         rangeEnd = rangeEnd == null ? LocalDateTime.now() : rangeEnd;
         rangeStart = rangeStart == null ? rangeEnd.minusWeeks(1) : rangeStart;
         Sort sort = Sort.by(DESC, "created");
         final PageRequest page = PageRequest.of(from, size, sort);
         List<Comment> comments;
-        comments = available == null ? commentRepository.findCommitAndUserId(userId, rangeStart, rangeEnd, page) :
-                commentRepository.findCommitAndUserIdAndAvailable(userId, available, rangeStart, rangeEnd, page);
+
+        comments = status.equals(CommentStatus.ALL) ? commentRepository.findCommitAndUserId(userId, rangeStart, rangeEnd, page) :
+                commentRepository.findCommitAndUserIdAndStatus(userId, status, rangeStart, rangeEnd, page);
         return comments.stream()
                 .map(commentMapper::toCommentFullDto)
                 .collect(Collectors.toList());
@@ -108,7 +110,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     }
 
     private Comment isExistsCommentByUserId(Long userId, Long commentId) {
-        if (!commentRepository.existsByIdAndAuthor_IdAndAvailableFalse(commentId, userId)) {
+        if (!commentRepository.existsByIdAndAuthor_IdAndStatus(commentId, userId, CommentStatus.PENDING)) {
             throw new NotFoundException(String.format("Comment id=%s User id=%s not found", commentId, userId));
         }
         return commentRepository.findByIdAndAuthor_Id(commentId, userId);
