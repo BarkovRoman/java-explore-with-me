@@ -9,7 +9,6 @@ import ru.practicum.ewm.comments.service.CommentAdminService;
 
 @Slf4j
 @RestController
-@Validated
 @RequiredArgsConstructor
 @RequestMapping("/admin/comment")
 public class CommentAdminController {
