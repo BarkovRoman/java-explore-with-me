@@ -3,11 +3,13 @@ package ru.practicum.ewm.event.dto;
 import org.mapstruct.*;
 import ru.practicum.ewm.categories.dto.CategoryMapper;
 import ru.practicum.ewm.categories.model.Category;
+import ru.practicum.ewm.comments.dto.CommentMapper;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.User;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {CategoryMapper.class, UserMapper.class})
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {CategoryMapper.class, UserMapper.class, CommentMapper.class})
 public interface EventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "paid", defaultValue = "false")
@@ -23,6 +25,7 @@ public interface EventMapper {
     @Mapping(target = "publishedOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "category", source = "event.category")
     @Mapping(target = "initiator", source = "event.initiator")
+    @Mapping(target = "comments", source = "event.comments")
     @Mapping(target = "confirmedRequests", source = "confirmedRequests")
     EventFullDto toEventFullDto(Event event, int confirmedRequests);
 

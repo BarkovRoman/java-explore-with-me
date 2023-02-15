@@ -49,8 +49,9 @@ public class RequestServiceImp implements RequestService {
             throw new ExistingValidationException("Событие неопубликованное");
         }
 
-        if (event.getParticipantLimit().equals(event.getRequests().size())) {
-            log.error("Add Request userId={}, eventId={} Количество заявок равно лимиту", userId, eventId);
+        if (event.getParticipantLimit() == (event.getRequests().size())) {
+            log.error("Add Request userId={}, eventId={} Количество заявок={} равно лимиту={}",
+                    userId, eventId, event.getParticipantLimit(), event.getRequests().size());
             throw new ExistingValidationException("Количество заявок равно лимиту");
         }
 
@@ -67,9 +68,6 @@ public class RequestServiceImp implements RequestService {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException(String.format("Request id=%s not found", requestId)));
         request.setStatus(State.CANCELED);
-       /* Event event = eventRepository.findById(request.getEvent())
-                .orElseThrow(() -> new NotFoundException(String.format("Event id=%s not found", request.getEvent())));
-        event.setConfirmedRequests(event.getConfirmedRequests() - 1);*/
         log.info("Cancel RequestId={}", requestId);
         return requestMapper.toParticipationRequestDto(request);
     }
