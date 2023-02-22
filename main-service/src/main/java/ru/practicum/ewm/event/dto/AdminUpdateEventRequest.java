@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.event.model.AdminUpdateState;
 import ru.practicum.ewm.event.model.Location;
-import ru.practicum.ewm.event.model.State;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class AdminUpdateEventRequest {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    private State stateAction;
+    private AdminUpdateState stateAction;
     @Size(min = 3, max = 120)
     private String title;
 }

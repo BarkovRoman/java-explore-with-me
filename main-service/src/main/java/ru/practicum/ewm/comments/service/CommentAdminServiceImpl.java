@@ -29,6 +29,7 @@ public class CommentAdminServiceImpl implements CommentAdminService {
                 .orElseThrow(() -> new NotFoundException(String.format("Comment id=%s not found", commentId)));
         CommentStatus status = available ? CommentStatus.APPROVED : CommentStatus.REJECTED;
         comment.setStatus(status);
+        log.info("update BD status CommentId={}, status={}", commentId, status);
         return commentMapper.toCommentShortDto(comment);
     }
 }

@@ -34,4 +34,12 @@ public class Category {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

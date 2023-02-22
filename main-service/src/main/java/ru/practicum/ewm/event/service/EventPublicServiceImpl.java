@@ -13,11 +13,15 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.Sort;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
+import ru.practicum.ewm.event.util.EventUtil;
+import ru.practicum.ewm.request.model.RequestStatus;
+import ru.practicum.ewm.request.repository.RequestRepository;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventPublicServiceImpl implements EventPublicService {
     private final EventRepository eventRepository;
+    private final RequestRepository requestRepository;
     private final EventMapper eventMapper;
     private final StatsClient client;
 
@@ -37,6 +42,8 @@ public class EventPublicServiceImpl implements EventPublicService {
         rangeEnd = rangeEnd == null ? rangeStart.plusWeeks(1) : rangeEnd;
         List<Event> events = onlyAvailable ? eventRepository.findEventByAvailable(text, paid, rangeStart, rangeEnd, categories, page) :
                 eventRepository.findEvent(text, paid, rangeStart, rangeEnd, categories, page);
+        EventUtil.addViews(events, client);
+        EventUtil.addConfirmedRequests(events, requestRepository);
 
         if (sort == null) sort = Sort.ALL;
         switch (sort) {
@@ -46,21 +53,20 @@ public class EventPublicServiceImpl implements EventPublicService {
             case EVENT_DATE: // сортировка по дате
                 events.sort(Comparator.comparing(Event::getEventDate));
                 break;
-            default:
-                break;
         }
 
         log.info("Get Events={}", events);
         return events.stream()
                 .map(eventMapper::toEventShortDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
     public EventFullDto getById(Long id) {
         Event event = eventRepository.getByIdAndState(id, State.PUBLISHED);
         event.setViews(client.getViews(event.getId()));
+        event.setConfirmedRequests(requestRepository.countByEventAndStatus(id, RequestStatus.CONFIRMED));
         log.info("Get Event={}", event);
-        return eventMapper.toEventFullDto(event, event.getRequests() == null ? 0 : event.getRequests().size());
+        return eventMapper.toEventFullDto(event);
     }
 }

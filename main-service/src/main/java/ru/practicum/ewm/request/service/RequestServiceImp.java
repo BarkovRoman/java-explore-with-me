@@ -7,11 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
-import ru.practicum.ewm.exception.ExistingValidationException;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.dto.RequestMapper;
 import ru.practicum.ewm.request.model.Request;
+import ru.practicum.ewm.request.model.RequestStatus;
 import ru.practicum.ewm.request.repository.RequestRepository;
 import ru.practicum.ewm.user.repository.UserRepository;
 
@@ -34,30 +35,32 @@ public class RequestServiceImp implements RequestService {
     public ParticipationRequestDto create(Long userId, Long eventId) {
         isExistsUserById(userId);
         Event event = isExistsEventById(eventId);
+        event.setConfirmedRequests(requestRepository.countByEventAndStatus(eventId, RequestStatus.CONFIRMED));
+
         if (requestRepository.existsByRequesterAndEvent(userId, eventId)) {
             log.error("Add Request userId={}, eventId={} Request уже существует", userId, eventId);
-            throw new ExistingValidationException("Request уже существует");
+            throw new ConflictException("Request уже существует");
         }
 
         if (eventRepository.existsEventByIdAndInitiatorId(eventId, userId)) {
             log.error("Add Request userId={}, eventId={} Нельзя участвовать в своем событии", userId, eventId);
-            throw new ExistingValidationException("Нельзя участвовать в своем событии");
+            throw new ConflictException("Нельзя участвовать в своем событии");
         }
 
         if (event.getState().equals(State.PENDING)) {
             log.error("Add Request userId={}, eventId={} Событие неопубликованное", userId, eventId);
-            throw new ExistingValidationException("Событие неопубликованное");
+            throw new ConflictException("Событие неопубликованное");
         }
 
-        if (event.getParticipantLimit() == (event.getRequests().size())) {
+        if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             log.error("Add Request userId={}, eventId={} Количество заявок={} равно лимиту={}",
-                    userId, eventId, event.getParticipantLimit(), event.getRequests().size());
-            throw new ExistingValidationException("Количество заявок равно лимиту");
+                    userId, eventId, event.getParticipantLimit(), event.getConfirmedRequests());
+            throw new ConflictException("Количество заявок равно лимиту");
         }
 
         Request request = requestRepository.save(requestMapper.toRequest(userId, eventId));
 
-        if (!event.getRequestModeration()) request.setStatus(State.PUBLISHED);
+        if (!event.getRequestModeration()) request.setStatus(RequestStatus.PENDING);
         log.info("Add BD RequestId={}", request.getId());
         return requestMapper.toParticipationRequestDto(request);
     }
@@ -67,7 +70,7 @@ public class RequestServiceImp implements RequestService {
     public ParticipationRequestDto cancel(Long userId, Long requestId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException(String.format("Request id=%s not found", requestId)));
-        request.setStatus(State.CANCELED);
+        request.setStatus(RequestStatus.CANCELED);
         log.info("Cancel RequestId={}", requestId);
         return requestMapper.toParticipationRequestDto(request);
     }

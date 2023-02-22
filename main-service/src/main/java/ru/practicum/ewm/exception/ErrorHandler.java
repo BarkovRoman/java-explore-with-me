@@ -29,7 +29,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponseService handleExistingValidationException(ExistingValidationException e) {
+    public ErrorResponseService handleExistingValidationException(ConflictException e) {
         log.warn("Error 409 {}", e.getMessage());
         return new ErrorResponseService(e.getMessage(), "CONFLICT");
     }

@@ -38,4 +38,14 @@ public class Compilation {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Compilation{" +
+                "id=" + id +
+                ", events=" + events +
+                ", pinned=" + pinned +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

@@ -1,13 +1,16 @@
 package ru.practicum.ewm.request.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.request.model.Request;
+import ru.practicum.ewm.request.model.RequestStatus;
 
 import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    boolean existsByEventAndRequesterAndStatus(Long event, Long requester, State state);
+
+    Long countByEventAndStatus(Long event, RequestStatus status);
+
+    boolean existsByEventAndRequesterAndStatus(Long event, Long requester, RequestStatus state);
 
     boolean existsByRequesterAndEvent(Long requester, Long event);
 
@@ -16,4 +19,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findRequestsByRequester(Long userId);
 
     List<Request> findRequestsByIdIn(List<Long> requestIds);
+
+    List<Request> findByEventInAndStatus(List<Long> eventIds, RequestStatus status);
 }
