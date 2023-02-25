@@ -3,6 +3,7 @@ package ru.practicum.ewm.event.repository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.State;
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor<Event> {
     boolean existsByCategory_Id(Long id);
 
     List<Event> findEventByInitiatorId(Long userId, PageRequest page);
@@ -26,7 +27,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Set<Event> findByIdIn(Set<Long> events);
 
-    @Query("SELECT e FROM Event e " +
+    /*@Query("SELECT e FROM Event e " +
             "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
             "or upper(e.title) like upper(concat('%', ?1, '%')) " +
             "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
@@ -34,7 +35,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND size(e.requests) < e.participantLimit OR size(e.requests) = 0"
     )
     List<Event> findEventByAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
+*/
     @Query("SELECT e FROM Event e " +
             "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
             "or upper(e.title) like upper(concat('%', ?1, '%')) " +
@@ -42,4 +43,15 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND e.category.id = ?5 AND e.state = 'PUBLISHED' "
     )
     List<Event> findEvent(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
+
+    @Query("SELECT e, count(r.id) AS confirmedRequests FROM Event e " +
+            "LEFT JOIN Request r ON r.event = e.id " +
+            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
+            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
+            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
+            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
+            "AND r.status = 'CONFIRMED' " +
+            "HAVING confirmedRequests <  e.participantLimit OR confirmedRequests = 0"
+    )
+    List<Event> findEventByAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
 }
