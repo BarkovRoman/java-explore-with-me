@@ -13,7 +13,7 @@ import ru.practicum.ewm.user.model.User;
 public interface EventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "paid", defaultValue = "false")
-    @Mapping(target = "participantLimit", defaultValue = "0")
+    @Mapping(target = "participantLimit", defaultValue = "0L")
     @Mapping(target = "requestModeration", defaultValue = "true")
     @Mapping(target = "state", constant = "PENDING")
     @Mapping(target = "category", source = "categories")
@@ -26,8 +26,7 @@ public interface EventMapper {
     @Mapping(target = "category", source = "event.category")
     @Mapping(target = "initiator", source = "event.initiator")
     @Mapping(target = "comments", source = "event.comments")
-    @Mapping(target = "confirmedRequests", source = "confirmedRequests")
-    EventFullDto toEventFullDto(Event event, int confirmedRequests);
+    EventFullDto toEventFullDto(Event event);
 
     @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EventShortDto toEventShortDto(Event event);

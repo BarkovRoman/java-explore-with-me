@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.client.Stats;
 import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.event.dto.AdminUpdateEventRequest;
 import ru.practicum.ewm.event.dto.EventFullDto;
@@ -13,12 +12,14 @@ import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
-import ru.practicum.ewm.exception.ExistingValidationException;
+import ru.practicum.ewm.event.util.EventUtil;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.request.model.RequestStatus;
+import ru.practicum.ewm.request.repository.RequestRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class EventAdminServiceImpl implements EventAdminService {
 
     private final EventRepository eventRepository;
+    private final RequestRepository requestRepository;
     private final EventMapper eventMapper;
     private final StatsClient client;
 
@@ -37,22 +39,22 @@ public class EventAdminServiceImpl implements EventAdminService {
         Event event = getEventById(eventId);
 
         if (event.getEventDate().isBefore(LocalDateTime.now().minusHours(1))) {
-            log.error("Невозможно изменить событие");
-            throw new ExistingValidationException("Невозможно опубликовать событие");
+            log.error("EventDate={},  LocalDateTime.now={} min 1 hours", event.getEventDate(), LocalDateTime.now());
+            throw new ConflictException("Дата начала изменяемого события должна быть не ранее чем за час от даты публикации");
         }
 
         switch (updateEvent.getStateAction()) {
             case PUBLISH_EVENT:
                 if (!event.getState().equals(State.PENDING)) {
-                    log.error("Невозможно опубликовать событие");
-                    throw new ExistingValidationException("Невозможно опубликовать событие");
+                    log.error("Невозможно опубликовать событие. Status={}", event.getState());
+                    throw new ConflictException("Событие можно публиковать, только если оно в состоянии ожидания публикации");
                 }
                 event.setState(State.PUBLISHED);
                 break;
             case REJECT_EVENT:
                 if (event.getState().equals(State.PUBLISHED)) {
-                    log.error("Невозможно отменить событие");
-                    throw new ExistingValidationException("Невозможно отменить событие");
+                    log.error("Невозможно отменить событие. Status={}", event.getState());
+                    throw new ConflictException("Событие можно отклонить, только если оно еще не опубликовано ");
                 }
                 event.setState(State.CANCELED);
                 break;
@@ -60,17 +62,22 @@ public class EventAdminServiceImpl implements EventAdminService {
         event.setViews(client.getViews(event.getId()));
 
         event = eventMapper.updateEvent(updateEvent, event);
-        log.info("Put EventId={}", event.getId());
-        return eventMapper.toEventFullDto(event, event.getRequests() == null ? 0 : event.getRequests().size());
+
+        Long confirmedRequests = requestRepository.countByEventAndStatus(eventId, RequestStatus.CONFIRMED);
+
+        event.setConfirmedRequests(confirmedRequests);
+        log.info("Put BD EventId={}", event);
+        return eventMapper.toEventFullDto(event);
     }
 
     @Override
     public List<EventFullDto> get(List<Long> users, List<State> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         final PageRequest page = PageRequest.of(from, size);
         List<Event> events = eventRepository.findEventByInitiatorIdAndStateAndCategory_IdAndEventDateBetween(users, states, categories, rangeStart, rangeEnd, page);
-        addViews(events);
+        EventUtil.addViews(events, client);
+        EventUtil.addConfirmedRequests(events, requestRepository);
         return events.stream()
-                .map(event -> eventMapper.toEventFullDto(event, event.getRequests() == null ? 0 : event.getRequests().size()))
+                .map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
     }
 
@@ -78,11 +85,5 @@ public class EventAdminServiceImpl implements EventAdminService {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Event id=%s not found", id)));
 
-    }
-
-    private void addViews(List<Event> events) {
-        Map<Long, Event> eventMap = events.stream().collect(Collectors.toMap(Event::getId, event -> event));
-        List<Stats> views = client.getViewsAll(eventMap.keySet());
-        views.forEach(h -> eventMap.get(Long.parseLong(h.getUri().split("/")[1])).setViews(h.getHits()));
     }
 }

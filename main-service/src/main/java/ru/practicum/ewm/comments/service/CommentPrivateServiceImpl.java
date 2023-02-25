@@ -12,10 +12,10 @@ import ru.practicum.ewm.comments.dto.NewUpdateCommentDto;
 import ru.practicum.ewm.comments.model.Comment;
 import ru.practicum.ewm.comments.model.CommentStatus;
 import ru.practicum.ewm.comments.repository.CommentRepository;
-import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
-import ru.practicum.ewm.exception.ExistingValidationException;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.request.model.RequestStatus;
 import ru.practicum.ewm.request.repository.RequestRepository;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
@@ -92,9 +92,9 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     }
 
     private void isExistsRequestOrEventByUserId(Long eventId, Long userId) {
-        if (!requestRepository.existsByEventAndRequesterAndStatus(eventId, userId, State.PUBLISHED)) {
+        if (!requestRepository.existsByEventAndRequesterAndStatus(eventId, userId, RequestStatus.CONFIRMED)) {
             if (!eventRepository.existsEventByIdAndInitiatorId(eventId, userId)) {
-                throw new ExistingValidationException(String.format("User id=%s not participate or not initiator Event id=%s", userId, eventId));
+                throw new ConflictException(String.format("User id=%s not participate or not initiator Event id=%s", userId, eventId));
             }
         }
     }

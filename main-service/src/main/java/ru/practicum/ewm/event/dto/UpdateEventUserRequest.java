@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.event.model.Location;
-import ru.practicum.ewm.event.model.State;
+import ru.practicum.ewm.event.model.PrivateUpdateStatus;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.PositiveOrZero;
@@ -29,7 +29,7 @@ public class UpdateEventUserRequest {
     @PositiveOrZero
     private Integer participantLimit;
     private Boolean requestModeration;
-    private State stateAction;
+    private PrivateUpdateStatus stateAction;
     @Size(min = 3, max = 120, message = "title менее 3 или более 120")
     private String title;
 }

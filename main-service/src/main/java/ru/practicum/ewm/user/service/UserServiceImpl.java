@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.exception.ExistingValidationException;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.user.dto.NewUserDto;
 import ru.practicum.ewm.user.dto.ResponseUserDto;
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public List<ResponseUserDto> getAll(Integer from, Integer size, List<Long> ids) {
         if (ids != null && !ids.isEmpty()) {
             if (ids.stream().anyMatch(id -> id < 0)) {
-                throw new ExistingValidationException("ids отрицательными элементами");
+                throw new ConflictException("ids отрицательными элементами");
             }
             List<User> users = userRepository.findByIdIn(ids);
             return users.stream().map(mapper::toResponseUserDto).collect(Collectors.toList());

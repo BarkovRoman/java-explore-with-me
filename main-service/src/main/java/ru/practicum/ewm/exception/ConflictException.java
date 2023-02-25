@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class ExistingValidationException extends RuntimeException  {
+public class ConflictException extends RuntimeException  {
     private final String message;
 }

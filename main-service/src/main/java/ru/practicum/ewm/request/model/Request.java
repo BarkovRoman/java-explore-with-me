@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.practicum.ewm.event.model.State;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,7 +26,7 @@ public class Request {
     @Column(nullable = false)
     private Long requester;
     @Enumerated(EnumType.STRING)
-    private State status;
+    private RequestStatus status;
     @CreationTimestamp
     private LocalDateTime created;
 
@@ -43,4 +42,14 @@ public class Request {
         return getClass().hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "Request{" +
+                "id=" + id +
+                ", event=" + event +
+                ", requester=" + requester +
+                ", status=" + status +
+                ", created=" + created +
+                '}';
+    }
 }

@@ -10,7 +10,7 @@ import ru.practicum.ewm.categories.dto.*;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.categories.repository.CategoryRepository;
 import ru.practicum.ewm.event.repository.EventRepository;
-import ru.practicum.ewm.exception.ExistingValidationException;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public ResponseCategoryDto add(NewCategoryDto newCategoryDto) {
         Category category = categoryRepository.save(categoryMapper.toCategory(newCategoryDto));
-        log.info("Add Category={}", category);
+        log.info("Add BD Category={}", category);
         return categoryMapper.toResponseCategoryDto(category);
     }
 
@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category id=%s not found", catId)));
         category.setName(categoryDto.getName());
-        log.info("Update Category={}", category);
+        log.info("Update BD Category={}", category);
         return categoryMapper.toResponseCategoryDto(category);
     }
 
@@ -50,17 +50,18 @@ public class CategoryServiceImpl implements CategoryService {
     public void remove(Long id) {
         isExistsCategoryById(id);
         if (eventRepository.existsByCategory_Id(id)) {
-            throw new ExistingValidationException("Категория не доступна для удаления");
+            throw new ConflictException("Категория не доступна для удаления");
         }
         // Обратите внимание: с категорией не должно быть связано ни одного события.
-        log.info("Delete CategoryId={}", id);
         categoryRepository.deleteById(id);
+        log.info("Delete BD CategoryId={}", id);
     }
 
     @Override
     public List<ResponseCategoryDto> getAll(Integer from, Integer size) {
         final PageRequest page = PageRequest.of(from, size);
         Page<Category> categories = categoryRepository.findAll(page);
+        log.info("GetAll BD найдено записей={}, from={}, size={}", categories.getSize(), from, size);
         return categories.stream()
                 .map(categoryMapper::toResponseCategoryDto)
                 .collect(Collectors.toList());

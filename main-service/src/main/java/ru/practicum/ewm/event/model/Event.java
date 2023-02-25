@@ -46,7 +46,7 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private Boolean paid;
     @Column(name = "participant_limit")
-    private Integer participantLimit;
+    private Long participantLimit;
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation")
@@ -57,10 +57,11 @@ public class Event implements Serializable {
     private String title;
     @Transient
     private Long views;
+    @Transient
+    private Long confirmedRequests;
+
     @ManyToMany(mappedBy = "events")
     private Set<Compilation> compilations;
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private Set<Request> requests;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Comment> comments;
@@ -75,5 +76,20 @@ public class Event implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", eventDate=" + eventDate +
+                ", initiator=" + initiator +
+                ", paid=" + paid +
+                ", participantLimit=" + participantLimit +
+                ", publishedOn=" + publishedOn +
+                ", state=" + state +
+                ", views=" + views +
+                ", confirmedRequests=" + confirmedRequests +
+                '}';
     }
 }
