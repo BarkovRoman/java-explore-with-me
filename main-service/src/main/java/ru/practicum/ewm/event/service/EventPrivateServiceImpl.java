@@ -106,7 +106,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         if (status == RequestStatus.REJECTED) {
             long count = requests.stream().filter(request -> request.getStatus().equals(RequestStatus.CONFIRMED)).count();
             if (count != 0) {
-                log.error("Status Request={}, new status={}", RequestStatus.CONFIRMED, status);
+                log.error("Status Request={}, new status={}", RequestStatus.PENDING, status);
                 throw new ConflictException("Невозможно отменить подтвержденную заявку");
             }
             rejected = requests.stream()
@@ -120,7 +120,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         if (event.getParticipantLimit().equals(0L) || !event.getRequestModeration()) {
             log.info("Confirm Event limit={}, moderation={}", event.getParticipantLimit(), event.getRequestModeration());
             confirmed = requests.stream()
-                    .peek(request -> request.setStatus(status))
+                    .peek(request -> request.setStatus(RequestStatus.REJECTED))
                     .map(requestMapper::toParticipationRequestDto)
                     .collect(Collectors.toList());
             return new EventRequestStatusUpdateResult(confirmed, rejected);

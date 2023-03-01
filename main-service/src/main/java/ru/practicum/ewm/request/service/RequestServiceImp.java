@@ -60,7 +60,7 @@ public class RequestServiceImp implements RequestService {
 
         Request request = requestRepository.save(requestMapper.toRequest(userId, eventId));
 
-        if (!event.getRequestModeration()) request.setStatus(RequestStatus.PENDING);
+        if (!event.getRequestModeration()) request.setStatus(RequestStatus.CONFIRMED);
         log.info("Add BD RequestId={}", request.getId());
         return requestMapper.toParticipationRequestDto(request);
     }

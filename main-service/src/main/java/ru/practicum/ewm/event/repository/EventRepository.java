@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom {
 
     boolean existsByCategory_Id(Long id);
 
@@ -26,24 +26,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findEventByInitiatorIdAndStateAndCategory_IdAndEventDateBetween(List<Long> users, List<State> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest page);
 
     Set<Event> findByIdIn(Set<Long> events);
-
-    @Query("SELECT e FROM Event e " +                                    // , count(r.id) AS confirmedRequests
-            "LEFT JOIN Request r ON r.event = e.id " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' " +
-            "AND r.status = 'CONFIRMED' " +
-            "GROUP BY e " +
-            "HAVING count(r.id) <  e.participantLimit or count(r.id) = 0"
-    )
-    List<Event> findEventByAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE  upper(e.annotation) like upper(concat('%', ?1, '%')) " +
-            "or upper(e.title) like upper(concat('%', ?1, '%')) " +
-            "AND e.paid = ?2 AND e.eventDate BETWEEN ?3 AND ?4 " +
-            "AND e.category.id = ?5 AND e.state = 'PUBLISHED' "
-    )
-    List<Event> findEvent(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, PageRequest page);
 }
