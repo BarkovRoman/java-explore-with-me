@@ -4,11 +4,9 @@ import lombok.*;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.comments.model.Comment;
 import ru.practicum.ewm.compilations.model.Compilation;
-import ru.practicum.ewm.request.model.Request;
 import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -18,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "events", schema = "public")
-public class Event implements Serializable {
+public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

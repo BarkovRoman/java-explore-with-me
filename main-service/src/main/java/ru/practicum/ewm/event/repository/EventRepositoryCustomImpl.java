@@ -17,7 +17,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class EventRepositoryCustomImpl implements EventRepositoryCustom{
+public class EventRepositoryCustomImpl implements EventRepositoryCustom {
 
     private final EntityManager em;
 

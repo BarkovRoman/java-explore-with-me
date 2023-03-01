@@ -1,5 +1,6 @@
 package ru.practicum.ewm.event.service;
 
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +11,7 @@ import ru.practicum.ewm.event.dto.AdminUpdateEventRequest;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.event.model.Event;
+import ru.practicum.ewm.event.model.QEvent;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.event.util.EventUtil;
@@ -73,7 +75,23 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     public List<EventFullDto> get(List<Long> users, List<State> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         final PageRequest page = PageRequest.of(from, size);
-        List<Event> events = eventRepository.findEventByInitiatorIdAndStateAndCategory_IdAndEventDateBetween(users, states, categories, rangeStart, rangeEnd, page);
+        QEvent event = QEvent.event;
+        BooleanBuilder filter = new BooleanBuilder();
+
+        if (users != null && !users.isEmpty()) {
+            filter.and(event.initiator.id.in(users));
+        }
+        if (states != null && !states.isEmpty()) {
+            filter.and(event.state.in(states));
+        }
+        if (categories != null && !categories.isEmpty()) {
+            filter.and(event.category.id.in(categories));
+        }
+        if (rangeStart != null && rangeEnd != null) {
+            filter.and(event.eventDate.between(rangeStart, rangeEnd));
+        }
+        List<Event> events = eventRepository.findAll(filter, page).toList();
+
         EventUtil.addViews(events, client);
         EventUtil.addConfirmedRequests(events, requestRepository);
         return events.stream()
