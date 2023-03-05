@@ -2,7 +2,6 @@ package ru.practicum.ewm.event.model;
 
 import lombok.*;
 import ru.practicum.ewm.categories.model.Category;
-import ru.practicum.ewm.comments.model.Comment;
 import ru.practicum.ewm.compilations.model.Compilation;
 import ru.practicum.ewm.user.model.User;
 
@@ -60,9 +59,6 @@ public class Event {
 
     @ManyToMany(mappedBy = "events")
     private Set<Compilation> compilations;
-
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private Set<Comment> comments;
 
     @Override
     public boolean equals(Object o) {

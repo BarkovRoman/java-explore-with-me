@@ -25,7 +25,6 @@ public interface EventMapper {
     @Mapping(target = "publishedOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "category", source = "event.category")
     @Mapping(target = "initiator", source = "event.initiator")
-    @Mapping(target = "comments", source = "event.comments")
     EventFullDto toEventFullDto(Event event);
 
     @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")

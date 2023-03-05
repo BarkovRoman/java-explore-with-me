@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventPrivateServiceImpl implements EventPrivateService {
     private final RequestRepository requestRepository;
-
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;

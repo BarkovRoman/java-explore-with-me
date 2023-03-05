@@ -65,9 +65,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         event = eventMapper.updateEvent(updateEvent, event);
 
-        Long confirmedRequests = requestRepository.countByEventAndStatus(eventId, RequestStatus.CONFIRMED);
-
-        event.setConfirmedRequests(confirmedRequests);
+        event.setConfirmedRequests(requestRepository.countByEventAndStatus(eventId, RequestStatus.CONFIRMED));
         log.info("Put BD EventId={}", event);
         return eventMapper.toEventFullDto(event);
     }
@@ -94,6 +92,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         EventUtil.addViews(events, client);
         EventUtil.addConfirmedRequests(events, requestRepository);
+
         return events.stream()
                 .map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
